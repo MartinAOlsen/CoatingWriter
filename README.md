@@ -6,3 +6,4 @@ To run CoatingWriter:
 2) Choose options and run the "add_coatingwriter" script
 3) Run the \_ifit script in the guide folder to make an optimization and analysis of the result
 
+Modes "manual" and "TEST" are not working at this point in time. Avoid using these in current release.
