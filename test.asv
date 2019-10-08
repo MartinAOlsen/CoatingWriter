@@ -1,0 +1,92 @@
+clear all;clc;close all;
+%% Value:
+CW_value.scanType='value'
+% CW_value.Price=2000
+% 1 er tættest på sample, (højeste input) er tættest på moderator
+
+CW_value.Input1.type='S'
+CW_value.Input1.mode='specific'
+CW_value.Input1.distribution='constant'
+CW_value.Input1.mincenter=0
+CW_value.Input1.maxcenter=1
+CW_value.Input1.fixSides='HV';
+CW_value.Input1.deltaM=0.5
+CW_value.Input1.mStepLength=0.5
+CW_value.Input1.remove_m_under=1;
+CW_value.Input1.remove_m_over=6;
+
+
+CW_value.Input2.type='E'
+CW_value.Input2.mode='specific'
+CW_value.Input2.distribution='polyN'
+CW_value.Input2.mincenter=0
+CW_value.Input2.maxcenter=1
+CW_value.Input2.fixSides='HV'
+CW_value.Input2.deltaM=0.5
+CW_value.Input2.mStepLength=0.5
+CW_value.Input2.remove_m_under=1;
+CW_value.Input2.remove_m_over=6;
+CW_value.Input2.minPolyn=2
+CW_value.Input2.maxPolyn=6
+
+CW_value.Input3.type='C'
+CW_value.Input3.mode='specific'
+CW_value.Input3.distribution='constant'
+CW_value.Input3.mincenter=0
+CW_value.Input3.maxcenter=1
+CW_value.Input3.fixSides='curve';
+CW_value.Input3.deltaM=0.5
+CW_value.Input3.mStepLength=0.5
+CW_value.Input3.remove_m_under=1;
+CW_value.Input3.remove_m_over=6;
+
+
+
+CW_value.Input4.type='G'
+CW_value.Input4.distribution='none'
+
+CW_value.Input5.type='P'
+CW_value.Input5.mode='specific'
+CW_value.Input5.distribution='polyN'
+CW_value.Input5.mincenter=0
+CW_value.Input5.maxcenter=1
+CW_value.Input5.fixSides='HV'
+CW_value.Input5.deltaM=0.5
+CW_value.Input5.mStepLength=0.5
+CW_value.Input5.remove_m_under=1;
+CW_value.Input5.remove_m_over=6;
+CW_value.Input4.minPolyn=2
+CW_value.Input4.maxPolyn=6
+
+
+% P G(length=0.1) C(length=20) E(length=20) S(length=20)
+%Hvis linjen herunder udkommenteres, printes CW ikke automatisk til
+%instrumentfiler.
+CW_value.filePath='D:\Dropbox\Dropbox\Dropbox\guide_bot_development_version\Guide_For_CWTEST\PGCES'
+
+[ifit,Declare,Define,Initialize,Coating,CoatingFirst]=CoatingWriter(CW_value);
+%clc
+%% Test-print af output
+if 0
+    for i=1:length(ifit)
+        fprintf('%s\n',ifit{i});
+    end
+    for i=1:length(Declare)
+        fprintf('%s\n',Declare{i});
+    end
+    for i=1:length(Define)
+        fprintf('%s\n',Define{i});
+    end
+    for i=1:length(Initialize)
+        fprintf('%s\n',Initialize{i});
+    end
+    for i=1:length(CoatingFirst)
+        fprintf('%s\n',CoatingFirst{i});
+    end
+    for i=1:length(Coating)
+        fprintf('%s\n',Coating{i});
+    end
+end
+
+%alpharight=alpha1horizontal,alphaleft=alpha1horizontal,alphatop=alpha1vertical,alphabottom=alpha1vertical, mright=mValues1horizontal,mleft=mValues1horizontal,mtop=mValues1vertical,mbottom=mValues1vertical
+
