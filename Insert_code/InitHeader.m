@@ -21,7 +21,7 @@ clear;
     % manual	- Search parameters and make the user choose the best set
     % TEST      - Costum optimizer
     
-    Mode='manual'
+    Mode='value'
     
     
     %% Price Function:
