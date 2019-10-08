@@ -1,0 +1,26 @@
+
+
+[pars,monitor,m,o]=mcstas([instrument_name '_optimize.instr'],p,options{select});
+
+runResults(3)=o.criteriaBest;
+Result_this.critList(step)=o.criteriaBest;
+ValueList=[];
+ValueList=load('priceList.txt');
+ValueList=ValueList(1:length(o.criteriaHistory));
+ValueList(:,2)=o.criteriaHistory';
+tmp=load('priceListPunished.txt');
+ValueList(:,3)=tmp(1:length(o.criteriaHistory));
+Result_this.valueList=[Result_this.valueList;ValueList];
+delete priceList.txt;delete priceListPunished.txt;
+ParNames=fieldnames(p);
+for i=1:length(ParNames)
+    eval(['p.' ParNames{i} '=[p.' ParNames{i} '(1) pars1.' ParNames{i} ' p.' ParNames{i} '(3)]'])
+end
+%%%%%%%%%% Print
+printStep='optimize';
+time=toc;
+eval(printScript)
+%%%%%%%%%%
+
+
+

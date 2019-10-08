@@ -1,0 +1,218 @@
+/*******************************************************************************
+*
+* McStas, neutron ray-tracing package
+*         Copyright 1997-2002, All rights reserved
+*         Risoe National Laboratory, Roskilde, Denmark
+*         Institut Laue Langevin, Grenoble, France
+*
+* Component: CoatingWriter_monitor
+*
+* %I
+* Written by: Martin Olsen
+* Date: Jan. 30, 2019
+* Version: $Revision$
+* Origin: Københavns Universitet
+* Release: McStas 2.?.?
+*
+* Minimal output monitor for optimizations of neutron guides.
+*
+* %D
+* A minimal output monitor for gauging neutron guide performance.
+*
+* Example: CoatingWriter_monitor(nh=20, nv=20, filename="Output.pos",
+*           xmin=-0.1, xmax=0.1, ymin=-0.1, ymax=0.1,
+*           maxdiv_h=2, maxdiv_v=2)
+*
+* %P
+* INPUT PARAMETERS:
+*
+* xwidth:   Width of detector. Overrides xmin,xmax. (m)
+* yheight:  Height of detector. Overrides ymin,ymax. (m)
+* price: Price of the neutron guide (k€) 
+* maxdiv_v: Maximal vertical divergence detected (degrees)
+* maxdiv_h: Maximal vertical divergence detected (degrees)
+* min_lambda: Minimal wavelength detected (Å)
+* max_lambda: Maximal wavelength detected (Å)
+* filename: Name of file in which to store the detector image (text)
+* restore_neutron: If set, the monitor does not influence the neutron state (1)
+*   Optional that introduces new features:
+* background_min_lambda: Minimal wavelength detected as background (Å)
+* background_max_lambda: Maximal wavelength detected as background (Å)
+*
+*
+*
+*
+*
+* OUTPUT PARAMETERS:
+*
+* Div_N:    Array of neutron counts
+* Div_p:    Array of neutron weight counts
+* Div_p2:   Array of second moments
+*
+* %E
+*******************************************************************************/
+DEFINE COMPONENT CoatingWriter_monitor
+DEFINITION PARAMETERS (nh=1, nv=1)
+SETTING PARAMETERS (string filename=0,xwidth=0, yheight=0, maxdiv_h=2, maxdiv_v=2, restore_neutron=0,Price=1,min_lambda=0.0,max_lambda=0.0,background_min_lambda=0,background_max_lambda=0,background_divergence=0,background_position=0)
+OUTPUT PARAMETERS (Div_N, Div_p, Div_p2)
+/* Neutron parameters: (x,y,z,vx,vy,vz,t,sx,sy,sz,p) */ 
+DECLARE
+  %{
+    double n_neutrons = 0;
+    double intensity = 0;
+    double lambda_background_intensity = 0; n_lambda_background=0;
+    double pos_background_intensity = 0; n_pos_background=0;
+    double div_background_intensity = 0; n_div_background=0;
+    double intensity_squared = 0;
+    double price_performance = 0;
+    double inv_pice;
+    double xmax,xmin,ymax,ymin;
+    double lambda;
+    double nx=0, ny=0, nz=1;
+    double outArray[16]; double emptyArray[16];
+    int world_size;
+  %}
+INITIALIZE
+  %{
+    if (xwidth  > 0) { xmax = xwidth/2;  xmin = -xmax; }
+    if (yheight > 0) { ymax = yheight/2; ymin = -ymax; }
+    inv_pice = 1/Price;
+    
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  %}
+TRACE
+  %{
+    int i,j;
+    double h_div, v_div;
+    double v, vn;
+    
+    
+    PROP_Z0;
+    if (x>xmin && x<xmax && y>ymin && y<ymax)
+    {
+      /* Find length of projection onto the [nx ny nz] axis */
+      vn = scalar_prod(vx, vy, vz, nx, ny, nz);
+      h_div = RAD2DEG*atan2(vx,vn);
+      v_div = RAD2DEG*atan2(vy,vn);
+      lambda = (2*PI/V2K)/sqrt(vx*vx + vy*vy + vz*vz);
+      
+      if (h_div < maxdiv_h && h_div > -maxdiv_h &&  // only count if inside horizontal divergence limits
+          v_div < maxdiv_v && v_div > -maxdiv_v && // only count if inside vertical divergence limits
+	   lambda < max_lambda && lambda > min_lambda // only count if inside lambda limits
+	    )
+      {
+       	
+        n_neutrons++;
+        intensity += p;
+        intensity_squared += (p*p);
+	    price_performance += p*inv_pice;
+        SCATTER;
+      }
+	// Meassure "background" intensity from a determined wavelenght interval
+      if (background_max_lambda > 0 && background_min_lambda < lambda  && background_max_lambda > lambda){
+	  lambda_background_intensity += p;
+      	  n_lambda_background++;
+      }
+        // Meassure background from all neutrons that hit the sample but has wrong divergence
+      if (h_div > maxdiv_h || h_div < -maxdiv_h || v_div > maxdiv_v || v_div < -maxdiv_v){
+	  div_background_intensity += p;
+      	  n_div_background++;
+      }
+
+	// Add uniformity here
+
+    }   
+	
+    if (x<xmin || x>xmax || y<ymin || y>ymax){
+	pos_background_intensity += p;
+      	n_pos_background++;
+    }
+
+   
+
+    if (restore_neutron) {
+      RESTORE_NEUTRON(INDEX_CURRENT_COMP, x, y, z, vx, vy, vz, t, sx, sy, sz, p);
+    }
+  %}
+//printf("Wavelenth = %2.2f Å\n",lambda);
+SAVE
+  %{
+     /*
+     FILE *f = fopen(filename, "w");
+     fprintf(f,"CoatingWriter Monitor\nThis monitor is made for use with the CoatingWriter optimization addon to guide_bot\nMade for easy load in matlab by executing it as a string from line 4 and down.\n");
+     // Intensity and price
+     fprintf(f,"Intensity = %f\n",intensity);
+     fprintf(f,"Price = %f\n",Price);
+     fprintf(f,"n_neutrons = %1.0f\n",n_neutrons);
+     fprintf(f,"Error = %f\n",intensity/sqrt(n_neutrons));
+
+     // Background
+     fprintf(f,"background_intensity = %f\n",background_intensity);
+     fprintf(f,"background_error = %f\n",background_intensity/sqrt(n_background));
+     fprintf(f,"n_background = %1.0f\n",n_background);
+
+     // Uniformity
+
+
+
+     fclose(f);
+	*/
+     
+
+
+	 /*DETECTOR_OUT_1D(
+        "Wavelength monitor",
+        "Wavelength [AA]",
+        "Intensity",
+        "L", min_lambda, max_lambda, n_neutrons,
+        &n_neutrons,&intensity,&Price,
+        filename);
+    DETECTOR_OUT_1D(
+        "CoatingWriter monitor",
+        "Price",
+        "I",
+        "background_intensity",1,2,3,
+     	&Price,&intensity,&background_intensity,
+        filename);*/
+
+
+
+	outArray[0] = intensity;
+	outArray[1] = Price/world_size;
+	outArray[2] = n_neutrons;
+	outArray[3] = lambda_background_intensity;
+	outArray[4] = n_lambda_background;
+	outArray[5] = 1;
+	outArray[6] = pos_background_intensity;
+	outArray[7] = n_pos_background;
+	outArray[8] = div_background_intensity;
+	outArray[9] = n_div_background;
+	outArray[10] = 0;
+	outArray[11] = 0;
+	outArray[12] = 0;
+	outArray[13] = 0;
+	outArray[14] = 0;
+	outArray[15] = 0;
+	outArray[16] = 0;
+
+
+       DETECTOR_OUT_1D(
+        "Wavelength monitor",
+        "Wavelength [AA]",
+        "Intensity",
+        "L", 0, 0, 17,
+        &outArray[0],&emptyArray[0],&emptyArray[0],
+        filename);
+  %}
+
+MCDISPLAY
+  %{
+    magnify("xy");
+    multiline(5, (double)xmin, (double)ymin, 0.0,
+                 (double)xmax, (double)ymin, 0.0,
+                 (double)xmax, (double)ymax, 0.0,
+                 (double)xmin, (double)ymax, 0.0,
+                 (double)xmin, (double)ymin, 0.0);
+%}
+
+END
