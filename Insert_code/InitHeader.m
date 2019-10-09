@@ -75,11 +75,11 @@ clear;
     % Custom scan
     elseif strcmp(Mode,'TEST')
         CW_input.scanType='value'
-	CW_input.Price=0;  
-	CW_input.criteria=['intensity' , 'price'];  % Choose two criteria from: 'intensity' , 'price' , 'value' , 'background' , 'uniformity'
-	CW_input.background_wavelenght=[0,1.25];    % Wavelenghts considered noise
-	CW_input.background_divergence = 0;         % [BINARY] toggle if too high divergence is considered noise
-	CW_input.background_position = 0;           % [BINARY] toggle if neutrons missing the sample is considered noise
+        CW_input.Price=0;  
+        CW_input.criteria=['intensity' , 'price'];  % Choose two criteria from: 'intensity' , 'price' , 'value' , 'background' , 'uniformity'
+        CW_input.background_wavelenght=[0,1.25];    % Wavelenghts considered noise
+        CW_input.background_divergence = 0;         % [BINARY] toggle if too high divergence is considered noise
+        CW_input.background_position = 0;           % [BINARY] toggle if neutrons missing the sample is considered noise
 
     % Manual
     elseif strcmp(Mode,'manual')
