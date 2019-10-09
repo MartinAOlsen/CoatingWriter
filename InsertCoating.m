@@ -195,7 +195,7 @@ for k=1:length(ifits)
         end
         clear tmp;
         tmp {1} = 'f = fieldnames(pars);'
-        tmp {1} = 'optimal = p'
+        tmp {2} = 'optimal = p'
         tmp {3} = 'for i = 1:length(f)'
         tmp {4} = 'optimal.(f{i}) = pars.(f{i})'
         tmp {5} = 'end'

@@ -188,7 +188,7 @@ for i=1:length(Result)
     %try
     Profile=figure;
     set(Profile, 'Position', [0 0 1000 600])
-    mstruct = read_coating([scanName{i} '/CoatingWriter_output.txt']);
+    mstruct = read_coating([scanName{i} '/CoatingWriter_output_'  num2str(Result(i).demandPrice) '.txt']);
     listing = dir(scanName{i});
     for j = 1 : length(listing) 
         if sum(strfind(listing(j).name,'geometry.dat'))
@@ -318,14 +318,17 @@ try
 
     
     figure(1);
-
-
+    %% PRISLISTE OG INTENSITETS LISTE MANGLER!!!
+    for i = 1:length(Result)
+        Price_list(i) = Result(i).resultPrice;
+        Intensity_list(i) = sum(Result(i).data.BT);
+    end
     scatter(Price_list,100*(Intensity_list)./mean(BrilRef_list(index_low:index_high)))
     title('Brilliance transfer of optimized guides at different prices');
     ylabel('Brilliance Transfer [%]');
     xlabel('Price');
     legends='';
-    legend(guides)
+    %legend(guides)
     hold on
 
 end

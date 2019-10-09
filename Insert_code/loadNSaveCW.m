@@ -1,5 +1,5 @@
 %% get price from summary
-Summary=fileread(['CoatingWriter_output.txt'])
+Summary=fileread(['CoatingWriter_output' scanname '.txt'])
 i=0;
 while i<length(Summary);
     i=i+1;
