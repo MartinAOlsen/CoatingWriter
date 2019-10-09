@@ -126,10 +126,10 @@ if strcmp(coatingOptions.segmentType,'G') == 0 % Don't make geometry approximati
 %         Lines_instr.COATINGfirst{end+1}=sprintf('\t Segment%iSubstrateSize+=2*verticalSegmentSize[segment-1]+2*horizontalSegmentSize[segment-1];',i);
         Lines_instr.COATINGfirst{end+1}=sprintf('\t xpar_x%i=-majoraxis_x%i+lengthFromStartx%i+(counter2-0.5)*(length%i/dSegments%i);',i,i,i,i,i);
         Lines_instr.COATINGfirst{end+1}=sprintf('\t xpar_y%i=-majoraxis_y%i+lengthFromStarty%i+(counter2-0.5)*(length%i/dSegments%i);',i,i,i,i,i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('\t horizontalSegmentSize[segment-1]=2*(length%i/dSegments%i)*((sqrt(fabs(majoraxis_x%i*majoraxis_x%i-xpar_x%i*xpar_x%i))*smallaxis_x%i)/majoraxis_x%i);',i,i,i,i,i,i,i,i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('\t verticalSegmentSize[segment-1]=2*(length%i/dSegments%i)*((sqrt(fabs(majoraxis_y%i*majoraxis_y%i-xpar_y%i*xpar_y%i))*smallaxis_y%i)/majoraxis_y%i);',i,i,i,i,i,i,i,i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('\t Segment%iHorizontalArea[segment-1]=2*(length%i/dSegments%i)*((sqrt(fabs(majoraxis_x%i*majoraxis_x%i-xpar_x%i*xpar_x%i))*smallaxis_x%i)/majoraxis_x%i);',i,i,i,i,i,i,i,i,i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('\t Segment%iVerticalArea[segment-1]=2*(length%i/dSegments%i)*((sqrt(fabs(majoraxis_y%i*majoraxis_y%i-xpar_y%i*xpar_y%i))*smallaxis_y%i)/majoraxis_y%i);',i,i,i,i,i,i,i,i,i);
+        Lines_instr.COATINGfirst{end+1}=sprintf('\t horizontalSegmentSize[segment-1]=2*(length%i/dSegments%i)*((sqrt(fabs(majoraxis_x%i*majoraxis_x%i-xpar_x%i*xpar_x%i))*smallaxis_parabolic_x%i)/majoraxis_x%i);',i,i,i,i,i,i,i,i);
+        Lines_instr.COATINGfirst{end+1}=sprintf('\t verticalSegmentSize[segment-1]=2*(length%i/dSegments%i)*((sqrt(fabs(majoraxis_y%i*majoraxis_y%i-xpar_y%i*xpar_y%i))*smallaxis_parabolic_y%i)/majoraxis_y%i);',i,i,i,i,i,i,i,i);
+        Lines_instr.COATINGfirst{end+1}=sprintf('\t Segment%iHorizontalArea[segment-1]=2*(length%i/dSegments%i)*((sqrt(fabs(majoraxis_x%i*majoraxis_x%i-xpar_x%i*xpar_x%i))*smallaxis_parabolic_x%i)/majoraxis_x%i);',i,i,i,i,i,i,i,i,i);
+        Lines_instr.COATINGfirst{end+1}=sprintf('\t Segment%iVerticalArea[segment-1]=2*(length%i/dSegments%i)*((sqrt(fabs(majoraxis_y%i*majoraxis_y%i-xpar_y%i*xpar_y%i))*smallaxis_parabolic_y%i)/majoraxis_y%i);',i,i,i,i,i,i,i,i,i);
 
         Lines_instr.COATINGfirst{end+1}=sprintf('\t Segment%iHorizontalArea[segment-1]=4*(length%i/dSegments%i)*((sqrt(fabs(majoraxis_x%i*majoraxis_x%i-xpar_x%i*xpar_x%i))*smallaxis_parabolic_x%i)/majoraxis_x%i);',i,i,i,i,i,i,i,i,i);
         Lines_instr.COATINGfirst{end+1}=sprintf('\t Segment%iVerticalArea[segment-1]=4*(length%i/dSegments%i)*((sqrt(fabs(majoraxis_y%i*majoraxis_y%i-xpar_y%i*xpar_y%i))*smallaxis_parabolic_y%i)/majoraxis_y%i);',i,i,i,i,i,i,i,i,i);

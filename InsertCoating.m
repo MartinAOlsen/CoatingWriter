@@ -186,6 +186,22 @@ for k=1:length(ifits)
         % Insert all parts in a new list:
         B=[before,lines_ifit,after];
         
+        
+        %% FIX error in monitor output from new iFIT
+        for i = 1:length(B) 
+             if strfind(B{i},'optimal=monitor(1).Data.Parameters;')
+                cutIndex = i;
+            end 
+        end
+        clear tmp;
+        tmp {1} = 'f = fieldnames(pars);'
+        tmp {1} = 'optimal = p'
+        tmp {3} = 'for i = 1:length(f)'
+        tmp {4} = 'optimal.(f{i}) = pars.(f{i})'
+        tmp {5} = 'end'
+        
+        B=[B(1:cutIndex-1),tmp,B(cutIndex+1:end)];
+        
         % Split the "B" up into an "optimize" and "analyze"
         % part, and toggle the content from mode.
         
@@ -300,6 +316,8 @@ for k=1:length(ifits)
                 coatingVars=sprintf('%s''%s'',',coatingVars,tempLines(3:end));
                 
             end
+
+          
         end
         coatingVars=sprintf('%s};',coatingVars(1:end-1));
 
