@@ -193,7 +193,13 @@ while options.generation < options.maxIter
                     c1 = eval(['History(j).results(i).' criterias{1}]);
                     c2 = eval(['History(j).results(i).' criterias{2}]);
                     %errorbar(c2,c1,eval(['History(options.generation).results(i).' criterias{1} '_error'])/2,'o','Color',clist(i,:),'MarkerSize',10,'Marker','.');
-                    scatter(c2,c1,15,Cmap(j,:),'filled')
+			if (j<options.generation)
+                    		scatter(c2,c1,15,Cmap(j,:),'filled')
+			else
+				scatter(c2,c1,15,Cmap(j,:),'filled','edgecolor',[1,0,0],'LineWidth',0.6)
+			end
+			xlabel('Price [1000 euro]')
+			ylabel('intensity []')
                     hold on
                 end
             end

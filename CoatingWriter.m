@@ -35,15 +35,6 @@ end
 
 
 
-%% Price Function Values
-if strcmp(coatingOptions.priceFun,'SwissNeutronics2017')
-        coatingOptions.substrateMode='none';              % Either power-function dependant on length or area of the segment, or constant ('none' to ignore all substrate in prices)
-        coatingOptions.substrateArealDependancy='linear'; % linear or power dependancy - disregarded if no areal dependancy
-        coatingOptions.coatingMode='area';                % Either power-function dependant on length or area of the segment, or constant
-        coatingOptions.coatingArealDependancy='SNfit1';   % linear or power dependancy  - disregarded if no areal dependancy
-else
-    error('Price function not recognized')
-end
 
 
 %% TEMPORARY FIX TO GUIDE_BOT STANDARD 
@@ -54,8 +45,10 @@ for i=1:nInput
     eval(sprintf('coatingOptions.Input%i=tmp.Input%i;',i,nInput-i+1));
 end
 
-
-
+%% Price Function Values
+% This has been seperated into a seperate file
+% All 
+coatingOptions = PriceFunctionValues(coatingOptions)
 
 
 
