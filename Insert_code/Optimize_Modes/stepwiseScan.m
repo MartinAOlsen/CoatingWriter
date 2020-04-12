@@ -99,7 +99,7 @@ end
         scatter(accuLen,mValuesArray(:,3),'k');
         axis([0,accuLen(end),0,6])
         hold off
-        title('Coating distribution Horizontal')
+        title('Coating distribution Horizontal (left and right mirror)')
         xlabel('Length from guide start [m]')
         ylabel('mvalue')
         
@@ -111,7 +111,7 @@ end
         scatter(accuLen,mValuesArray(:,5),'k');
         axis([0,accuLen(end),0,6])
         hold off
-        title('Coating distribution Vertical')
+        title('Coating distribution Vertical (top and bottom mirror)')
         xlabel('Length from guide start [m]')
         ylabel('mvalue')
     end
@@ -169,12 +169,15 @@ stepScanTime=tic;
     end
 %% Loop over all subsegments (mirrors)
     for segment = length(nOccurences):-1:1  % Loop over each guide segment
-        for index = 1 : size(IndexToRun,2)
+        thisID = IndexToRun(segment,:);
+        thisID(~cellfun('isempty',thisID))
+        for index = 1 : sum(~cellfun('isempty', thisID( :)))
             mirrorsThisRun=IndexToRun{segment,index};
             
             for subSegment = 1 : nOccurences(segment) % Loop over each set of mirrors
                 bestCrit=0;
-                ArrayIndex=subSegment+sum(nOccurences(1:segment-1));
+                SegIndex=subSegment+sum(nOccurences(segment+1:end));
+                ArrayIndex = sum(nOccurences)-SegIndex;
                 %% Chose new m-value
                 critList=[];
                 errorList=[];
@@ -210,18 +213,23 @@ stepScanTime=tic;
                        fprintf(fid,'%1.0f,%1s,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s\n',tmp{1},char(tmp{2}),tmp{3},tmp{4},tmp{5},tmp{6},tmp{7},tmp{8},tmp{9},tmp{10},tmp{11},char(tmp{12}))
                     end
                     fclose(fid)
-                %% Run McStas
-                    [pars,monitor,m,o]=mcstas([instrument_name '_optimize.instr'],p,options{select});
+                    %% Run McStas
+                    %[pars,monitor,m,o]=mcstas([instrument_name '_optimize.instr'],p,options{select});
+                    [monitor] = simpleSim([instrument_name '_optimize.instr'],p,options{select});
                     iters=iters+1;
                 
-                %% Save part-result
+                    %% Save part-result
                     % Calculate criteria:
                     if select==1
-                        Criteria=monitor.Data.Criteria;
-                        Error=monitor.Data.values(2);
+%                         Criteria=monitor.Data.Criteria;
+%                         Error=monitor.Data.values(2);
+                            Criteria=monitor.Data.Criteria
+                            Error = monitor.Data.Error
                     else
-                        Criteria=mean(mean(monitor(3).Data.I)); 
-                        Error=monitor.Data.values(2);
+%                         Criteria=mean(mean(monitor(3).Data.I)); 
+%                         Error=monitor.Data.values(2);
+                            Criteria=monitor.Data.Criteria
+                            Error = monitor.Data.Error
                     end
                     % If criteria is new best, save
                     if abs(Criteria)>abs(bestCrit)
@@ -241,7 +249,8 @@ stepScanTime=tic;
                         subplot(2,3,6);
                         scatter(1:0.5:newMvalue,abs(critList),'b','filled');
                         hold on
-                        errorbar(1:0.5:newMvalue,abs(critList),abs(errorList),'LineStyle','none','Color','r')
+                        %errorbar(1:0.5:newMvalue,abs(critList),abs(errorList),'LineStyle','none','Color','r')
+			pause(0.05)
 
                         xlabel('m-value')
                         ylabel('criteria (higher is better)')
@@ -296,7 +305,7 @@ stepScanTime=tic;
                         subplot(2,3,6);
                         scatter(1:0.5:5,abs(critList),'b','filled');
                         hold on
-                        errorbar(1:0.5:5,abs(critList),abs(errorList),'LineStyle','none','Color','r')
+                        %errorbar(1:0.5:5,abs(critList),abs(errorList),'LineStyle','none','Color','r')
                         hold off
                         xlabel('m-value')
                         ylabel('criteria (higher is better)')
@@ -330,45 +339,48 @@ stepScanTime=tic;
 %                         uitable('Data',{1,2,'a'})
                     
                     % Plot New distribution
-                        thisSegmentNumber=mValuesArray(ArrayIndex,1);
+                        %thisSegmentNumber=mValuesArray(ArrayIndex,1);
+                        %accuLen=cumsum(lenArray);
+                        %nOffset=sum(nOccurences(end:-1:segment+1));
+                        %arrayOffset=sum(nOccurences(1:segment-1));
+                        %lenOffset=sum(lenArray(1:nOffset));
+                        %thisSegmentOffset=cumsum(lenArray(nOffset+1:ArrayIndex-arrayOffset+nOffset));
+                        %if isempty(thisSegmentOffset) ; thisSegmentOffset = 0; end
+                        %thisLength=thisSegmentOffset(end)+lenOffset-0.5*(lenArray(ArrayIndex-arrayOffset));
+                         thisLength= sum(lenArray(1:SegIndex-1)) + 0.5* lenArray(SegIndex);
                         
-                        accuLen=cumsum(lenArray);
-                        nOffset=sum(nOccurences(end:-1:segment+1));
-                        arrayOffset=sum(nOccurences(1:segment-1));
-                        lenOffset=sum(lenArray(1:nOffset));
-                        thisSegmentOffset=cumsum(lenArray(nOffset+1:ArrayIndex-arrayOffset+nOffset));
-                        if isempty(thisSegmentOffset) ; thisSegmentOffset = 0; end
-                        thisLength=thisSegmentOffset(end)+lenOffset-0.5*(lenArray(ArrayIndex-arrayOffset));
-                        
-                        
-                        mirrorToPlot=[mirrorsThisRun{:}];
+                         mirrorToPlot=[mirrorsThisRun{:}];
                         
                         subplot(2,3,[1,2]);
                         hold on
                         if sum(mirrorToPlot==1)>0
-                            scatter(thisLength,mValuesArray(ArrayIndex,2)','g','filled');
+                            %scatter(thisLength,mValuesArray(ArrayIndex,2)','g','filled');
+                            line([thisLength-0.5* lenArray(SegIndex),thisLength+0.5* lenArray(SegIndex)],[mValuesArray(ArrayIndex,2),mValuesArray(ArrayIndex,2)],'color','green','linewidth',3)
                         end
                         
                         axis([0,accuLen(end),0,6])
                         if sum(mirrorToPlot==2)>0
-                            scatter(thisLength,mValuesArray(ArrayIndex,3)','b','filled');
+                            %scatter(thisLength,mValuesArray(ArrayIndex,3)','b','filled');
+                            line([thisLength-0.5* lenArray(SegIndex),thisLength+0.5* lenArray(SegIndex)],[mValuesArray(ArrayIndex,3),mValuesArray(ArrayIndex,3)],'color','blue','linewidth',3)
                         end
                         hold off
                         axis([0,accuLen(end),0,6])
                         subplot(2,3,[4,5]);
                         hold on
                         if sum(mirrorToPlot==3)>0
-                            scatter(thisLength,mValuesArray(ArrayIndex,4)','m','filled');
+                            line([thisLength-0.5* lenArray(SegIndex),thisLength+0.5* lenArray(SegIndex)],[mValuesArray(ArrayIndex,4),mValuesArray(ArrayIndex,4)],'color','magenta','linewidth',3)
+                            %scatter(thisLength,mValuesArray(ArrayIndex,4)','m','filled');
                         end
                         
                         axis([0,accuLen(end),0,6])
                         if sum(mirrorToPlot==4)>0
-                            scatter(thisLength,mValuesArray(ArrayIndex,5)','r','filled');
+                            line([thisLength-0.5* lenArray(SegIndex),thisLength+0.5* lenArray(SegIndex)],[mValuesArray(ArrayIndex,5),mValuesArray(ArrayIndex,5)],'color','red','linewidth',3)
+                            %scatter(thisLength,mValuesArray(ArrayIndex,5)','r','filled');
                         end
                         axis([0,accuLen(end),0,6])
                         hold off
                         title('Coating distribution Vertical')
-                        pause(0.05)
+                        pause(0.15)
                     end
             
             end

@@ -625,10 +625,10 @@ if strcmp(ScanType,'budget')
 %         Coating{end+1}=sprintf('}')
 
     else
-        Coating{end+1}=sprintf('if (fabs(sectionPrices-totalPrice)> %i)',coatingOptions.budgetMaxError)
-        Coating{end+1}=sprintf('{')
-        Coating{end+1}=sprintf('punishment=100000;')
-        Coating{end+1}=sprintf('}')
+        Coating{end+1}=sprintf('if (fabs(sectionPrices-totalPrice)> %i)',coatingOptions.budgetMaxError);
+        Coating{end+1}=sprintf('{');
+        Coating{end+1}=sprintf('punishment=100000;');
+        Coating{end+1}=sprintf('}');
     end
     Declare{end+1}=sprintf('double punishment;')
 end

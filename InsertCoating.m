@@ -80,7 +80,7 @@ copyfile([P slash 'guifiles' slash 'optim_random.m'],[coatingOptions.filePath sl
 copyfile([P slash 'guifiles' slash 'optim_Walker.m'],[coatingOptions.filePath slash 'optim_Walker.m']);
 copyfile([P slash 'guifiles' slash 'runMcStas.m'],[coatingOptions.filePath slash 'runMcStas.m']);
 
-
+copyfile([P slash 'Insert_code' slash 'simpleSim.m'],[coatingOptions.filePath slash 'simpleSim.m']);
 copyfile([P slash 'Insert_code' slash 'parFun.m'],[folderPath 'parFun.m']);
 copyfile([P slash 'Insert_code' slash 'maxLine.m'],[folderPath 'maxLine.m']);
 copyfile([P slash 'Insert_code' slash 'plot_guide.m'],[folderPath 'plot_guide.m']);

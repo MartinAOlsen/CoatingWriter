@@ -171,7 +171,7 @@ A{end+1}=['CW_input.SpeedScanMode=''off'''];
  A{end+1}=['%% All done - Next lines will run CoatingWriter with the specified parameters'];
  A{end+1}=[''];
  A{end+1}=['% Set path:'];
- A{end+1}=['CW_input.filePath=''' directory slash inputString ''';'];
+ A{end+1}=['CW_input.filePath= [cd ''/'',''' inputString '''];'];
  A{end+1}=[''];
  A{end+1}=['% Run CoatingWriter:'];
  A{end+1}=['CoatingWriter(CW_input);'];
