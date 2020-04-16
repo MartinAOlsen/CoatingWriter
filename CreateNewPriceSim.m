@@ -271,5 +271,21 @@ if ParWorks==1
     end
     fclose(fileID);
 end
+if ParWorks==1
+if isfile(['launch_all_home_parallel.m'])
+    fileID=fopen(['launch_all_home_parallel.m'],'a');
+    for i=25:length(launch_home_parallel)
+        fprintf(fileID,'%s\n',char(launch_home_parallel{i}));
+    end
+    fclose(fileID);
+else
+    fileID=fopen(['launch_all_home_parallel.m'],'w');
+    for i=1:length(launch_home_parallel)
+        fprintf(fileID,'%s\n',char(launch_home_parallel{i}));
+    end
+    fclose(fileID);
+end
+end
+
 fprintf('All folders created, run using launch_%s.sh on cluster or launch_home.m on home computer\n',instrumentName)
 end

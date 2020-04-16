@@ -8,6 +8,19 @@ options_single_home.dir=[cpath '/' filename 'waveALL'];
 
 %optimal
 optimal=monitor(1).Data.Parameters;
+Foptimal = fieldnames(optimal);
+Fp = fieldnames(p);
+for i = 1:length(Fp)
+    isField = 0;
+    for j = 1:length(Foptimal)
+        if strcmp(Foptimal{j},Fp{i})
+            isField = 1;
+        end
+    end
+   if isField==0
+        eval(['optimal.' Fp{i} '= p.' Fp{i} ';'])
+    end
+end
 
 % rest of options for cluster
 if (select==2); load NUMCORES.DAT; warning off; else NUMCORES=0; end;

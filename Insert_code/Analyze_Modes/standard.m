@@ -24,9 +24,23 @@ options_single={options_single_home options_single_cluster};
 wavecenters=[ 3 3 3 3 3 ];
 snapwidth=0.01*ones(1,5);
 optimal=monitor(1).Data.Parameters;
-names=fieldnames(optimal);
+
 optimal_ess = optimal;
 names_ess=fieldnames(optimal_ess);
+Foptimal = fieldnames(optimal);
+Fp = fieldnames(p);
+for i = 1:length(Fp)
+    isField = 0;
+    for j = 1:length(Foptimal)
+        if strcmp(Foptimal{j},Fp{i})
+            isField = 1;
+        end
+    end
+   if isField==0
+        eval(['optimal.' Fp{i} '= p.' Fp{i} ';'])
+    end
+end
+names=fieldnames(optimal);
 
 % Run for fom wavelengths
 optimal_visualizer = optimal;

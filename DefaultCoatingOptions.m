@@ -173,6 +173,27 @@ Options.default_P_linear.remove_m_over=0;
 Options.default_P_linear.nSegments=100;
 Options.default_P_linear.distribution='linear';
 
+Options.default_P_constant.segmentType='P';
+Options.default_P_constant.mode='specific';
+Options.default_P_constant.minM=1;
+Options.default_P_constant.maxM=6;
+Options.default_P_constant.minAvgM=1;
+Options.default_P_constant.maxAvgM=5;
+Options.default_P_constant.minCenter=0.5;
+Options.default_P_constant.maxCenter=0.5;
+Options.default_P_constant.minA=0;
+Options.default_P_constant.maxA=0;
+Options.default_P_constant.minC=0;
+Options.default_P_constant.maxC=0;
+Options.default_P_constant.minB=0;
+Options.default_P_constant.maxB=0;
+Options.default_P_constant.fixSides='all';
+Options.default_P_constant.remove_m_under=0;  
+Options.default_P_constant.remove_m_over=0; 
+Options.default_P_constant.nSegments=1;
+Options.default_P_constant.distribution='constant';
+
+
 %% S segment
 Options.default_S_exp.segmentType='S';
 Options.default_S_exp.mode='specific';

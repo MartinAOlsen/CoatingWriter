@@ -189,16 +189,30 @@ for k=1:length(ifits)
         
         %% FIX error in monitor output from new iFIT
         for i = 1:length(B) 
-             if strfind(B{i},'optimal=monitor(1).Data.Parameters;')
+             if strfind(B{i},'optimal=monitor(1).Data.Parameters')
                 cutIndex = i;
             end 
         end
         clear tmp;
-        tmp {1} = 'f = fieldnames(pars);'
-        tmp {2} = 'optimal = p'
-        tmp {3} = 'for i = 1:length(f)'
-        tmp {4} = 'optimal.(f{i}) = pars.(f{i})'
-        tmp {5} = 'end'
+        %tmp {1} = 'f = fieldnames(pars);'
+        %tmp {2} = 'optimal = p'
+        %tmp {3} = 'for i = 1:length(f)'
+        %tmp {4} = 'optimal.(f{i}) = pars.(f{i})'
+        %tmp {5} = 'end'
+	tmp {1} = 'Foptimal = fieldnames(optimal);'
+	tmp {end+1} =' Fp = fieldnames(p);'
+	tmp {end+1} = 'for i = 1:length(Fp)'
+	tmp {end+1} = '    isField = 0;'
+	tmp {end+1} = '    for j = 1:length(Foptimal)'
+	tmp {end+1} = '        if strcmp(Foptimal{j},Fp{i})'
+	tmp {end+1} = '            isField = 1;'
+	tmp {end+1} = '        end'
+	tmp {end+1} = '    end'
+	tmp {end+1} = '   if isField==0'
+	tmp {end+1} = ['        eval([''optimal.'' Fp{i} ''= p.'' Fp{i} '';''])']
+	tmp {end+1} = '    end'
+	tmp {end+1} = 'end'
+
         
         B=[B(1:cutIndex-1),tmp,B(cutIndex+1:end)];
         

@@ -1,8 +1,8 @@
 pause(rand()*15)
-printScript=fileread('printStatusCW.m');
+printScript=fileread([cd '/printStatusCW.m']);
 tmpFolder=cd;
 cd ..
-outputFile=fileread('RunStatus.txt');
+outputFile=fileread([cd '/RunStatus.txt']);
 cd(tmpFolder)
 runID=1;
 while true

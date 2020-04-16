@@ -56,10 +56,12 @@ end
 
 
 %% Total status file
-cd ..
+ idcs   = strfind(filepath,'/');
+ RunStatuspath = filepath(1:idcs(end)-1);
+
 %A=importdata('RunStatus.txt');
 
-fileID=fopen('RunStatus.txt','r'); 
+fileID=fopen([RunStatuspath '/RunStatus.txt'],'r'); 
 i = 1;
 tline = fgetl(fileID);
 A{i} = tline;
@@ -97,9 +99,8 @@ end
 done=1;
     
 
-fileID=fopen('RunStatus.txt','w')
+fileID=fopen([RunStatuspath '/RunStatus.txt'],'w')
 for i=1:length(A)
     fprintf(fileID,'%s\n',A{i})
 end  
 fclose(fileID); 
-cd(filepath);
