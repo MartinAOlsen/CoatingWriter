@@ -73,12 +73,12 @@ if strcmp(coatingOptions.segmentType,'G') == 0 % Don't make geometry approximati
 
         Lines_instr.COATINGfirst{end+1}=sprintf('}');
         %Debug prints:
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("xpar_x=%%2.2f\\n",xpar_x%i);',i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("dSegments=%%2.2f\\n",dSegments%i);',i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("length=%%2.2f\\n",length%i);',i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("majoraxis_x=%%2.2f\\n",majoraxis_x%i);',i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("smallaxis_x=%%2.2f\\n",smallaxis_x%i);',i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("sqrt=%%2.2f\\n",(sqrt(majoraxis_x%i*majoraxis_x%i-xpar_x%i*xpar_x%i)*smallaxis_x%i));',i,i,i,i,i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("xpar_x=%%2.2f\\n",xpar_x%i);',i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("dSegments=%%2.2f\\n",dSegments%i);',i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("length=%%2.2f\\n",length%i);',i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("majoraxis_x=%%2.2f\\n",majoraxis_x%i);',i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("smallaxis_x=%%2.2f\\n",smallaxis_x%i);',i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("sqrt=%%2.2f\\n",(sqrt(majoraxis_x%i*majoraxis_x%i-xpar_x%i*xpar_x%i)*smallaxis_x%i));',i,i,i,i,i);
 
 
 %         Lines_instr.COATINGfirst{end+1}=sprintf('guideSubstratePrice+=Segment%iSubstrateSize;',i);  
@@ -147,17 +147,17 @@ if strcmp(coatingOptions.segmentType,'G') == 0 % Don't make geometry approximati
 	Lines_instr.COATINGfirst{end+1}=sprintf('\t Segment%i_w2[segment-1]=2*((sqrt(fabs(majoraxis_x%i*majoraxis_x%i-(xpar_x%i+(length%i/dSegments%i)*0.5)*(xpar_x%i+(length%i/dSegments%i)*0.5)))*smallaxis_parabolic_x%i)/majoraxis_x%i);',i,i,i,i,i,i,i,i,i,i,i);
 
 
-	Lines_instr.COATINGfirst{end+1}=sprintf('printf("w1=%%f, w2=%%1.6f, h1=%%1.6f, h2=%%1.6f\\n",Segment%i_h1[segment-1],Segment%i_h2[segment-1],Segment%i_w1[segment-1],Segment%i_w2[segment-1]);',i,i,i,i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("segmentsize=%%2.2f\\n",horizontalSegmentSize[segment-1]);');
+	%Lines_instr.COATINGfirst{end+1}=sprintf('printf("w1=%%f, w2=%%1.6f, h1=%%1.6f, h2=%%1.6f\\n",Segment%i_h1[segment-1],Segment%i_h2[segment-1],Segment%i_w1[segment-1],Segment%i_w2[segment-1]);',i,i,i,i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("segmentsize=%%2.2f\\n",horizontalSegmentSize[segment-1]);');
 
         Lines_instr.COATINGfirst{end+1}=sprintf('}');
         %Debug prints:
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("xpar_x=%%2.2f\\n",xpar_x%i);',i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("dSegments=%%2.2f\\n",dSegments%i);',i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("length=%%2.2f\\n",length%i);',i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("majoraxis_x=%%2.2f\\n",majoraxis_x%i);',i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("smallaxis_x=%%2.2f\\n",smallaxis_parabolic_x%i);',i);
-        Lines_instr.COATINGfirst{end+1}=sprintf('printf("sqrt=%%2.2f\\n",(sqrt(majoraxis_x%i*majoraxis_x%i-xpar_x%i*xpar_x%i)*smallaxis_parabolic_x%i));',i,i,i,i,i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("xpar_x=%%2.2f\\n",xpar_x%i);',i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("dSegments=%%2.2f\\n",dSegments%i);',i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("length=%%2.2f\\n",length%i);',i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("majoraxis_x=%%2.2f\\n",majoraxis_x%i);',i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("smallaxis_x=%%2.2f\\n",smallaxis_parabolic_x%i);',i);
+        %Lines_instr.COATINGfirst{end+1}=sprintf('printf("sqrt=%%2.2f\\n",(sqrt(majoraxis_x%i*majoraxis_x%i-xpar_x%i*xpar_x%i)*smallaxis_parabolic_x%i));',i,i,i,i,i);
 	
 
     elseif strcmp(coatingOptions.segmentType,'S') 

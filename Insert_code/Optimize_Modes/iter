@@ -19,7 +19,7 @@ end
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 
 

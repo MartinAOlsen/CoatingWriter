@@ -47,7 +47,7 @@ tic
 %%%%%%%%%% Print
 printStep='initialize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 
 ParNames=fieldnames(p);
@@ -90,7 +90,7 @@ Result_this.valueList=ValueList;
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 delete (['priceList' scanname '.txt']);delete (['priceListPunished' scanname '.txt']);
 
@@ -125,7 +125,7 @@ scannameA=[scanname '_coating'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 %% ADDANALYSIS %%
 
@@ -158,7 +158,7 @@ scannameA=[scanname '_all'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 
 for i=1:length(GeometryParList)
@@ -199,7 +199,7 @@ scannameA=[scanname '_geometry_2'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 %% ADDANALYSIS %%
 
@@ -228,7 +228,7 @@ scannameA=[scanname '_coating_2'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 %% ADDANALYSIS %%
 
@@ -259,7 +259,7 @@ scannameA=[scanname '_all_2'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 %% ADDANALYSIS %%
 
@@ -270,6 +270,6 @@ eval(printScript)
 %%%%%%%%%% Print
 printStep='analyze';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 monitor_ideal=monitor;

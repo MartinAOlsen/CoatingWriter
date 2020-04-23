@@ -20,7 +20,7 @@ steps=1;
 %%%%%%%%%%
 printStep='initialize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 step=1;
 [pars,monitor,m,o]=mcstas([instrument_name '_optimize.instr'],p,options{select});
@@ -42,6 +42,6 @@ TimeTable.stepScan=toc(Timing_StepScan);
 %%%%%%%%%%
 printStep='analyze';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 monitor_ideal=monitor;

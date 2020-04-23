@@ -1,10 +1,11 @@
 %------------------------ Analyzing the resulting optimum ------
-
+optimal=monitor(1).Data.Parameters;
 %options_single_home.compile=0;
 options_single_home.gravitation=1;
 options_single_home.ncount=1*1e7;
 options_single_home.mpi=1;
 options_single_home.dir=[cpath '/' filename 'waveALL'];
+
 
 
 % rest of options for cluster
@@ -24,7 +25,6 @@ options_single={options_single_home options_single_cluster};
 wavecenters=[ 3 3 3 3 3 ];
 snapwidth=0.01*ones(1,5);
 optimal=monitor(1).Data.Parameters;
-
 optimal_ess = optimal;
 names_ess=fieldnames(optimal_ess);
 Foptimal = fieldnames(optimal);

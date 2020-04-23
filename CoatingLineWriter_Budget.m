@@ -239,7 +239,7 @@ for n=1:freePanels
     if i==1 && n==1;
         Lines_instr.COATING{end+1}=sprintf('coatingPrice=totalPrice-TotalSubstratePrice-minimumCoatingPrices;');
         Lines_instr.DECLARE{end+1}=sprintf('double coatingPrice;');
-        Lines_instr.COATING{end+1}=sprintf('printf("Left from substrate = %%2.5f",totalPrice-TotalSubstratePrice);');
+        Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("Left from substrate = %%2.5f",totalPrice-TotalSubstratePrice));');
     end
     if numberInThisRun==4
         Lines_instr.COATING{end+1}=sprintf('demandPrice%i%s=length%i*(%2.2f/4)*segment%iPriceImportance/TotalImportance*coatingPrice;',i,panel,i,length(freePanelList),i);
@@ -318,7 +318,7 @@ for n=1:freePanels
         Lines_instr.COATING{end+1}=sprintf('Bisected=0;')
         Lines_instr.COATING{end+1}=sprintf('test1=0;')
         Lines_instr.COATING{end+1}=sprintf('mover=1;')
-        if debugPrint==1;Lines_instr.COATING{end+1}=sprintf('printf("\\n-----DEMAND PRICE =%%2.3f ----",demandPrice%i%s);',i,panel);end
+        if debugPrint==1;Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----DEMAND PRICE =%%2.3f ----",demandPrice%i%s));',i,panel);end
         if length(panel)>2
             Panel=sprintf('%s%s',upper(panel(1)),panel(2:end));
             Lines_instr.COATING{end+1}=sprintf('bisectPrice=demandPrice%i%s;',i,panel)
@@ -403,7 +403,7 @@ for n=1:freePanels
         
         %% Bisection part 2
         if Print_Bisection==1
-            if C_print==1;Lines_instr.COATING{end+1}=sprintf('printf("\\n-----Bisect try %%i -- B%i%s= %%2.2f ----",counter1,b%i%s);',i,panel,i,panel);else; end
+            if C_print==1;Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----Bisect try %%i -- B%i%s= %%2.2f ----",counter1,b%i%s));',i,panel,i,panel);else; end
         end
         Lines_instr.COATING{end+1}=sprintf('')
 
@@ -447,7 +447,7 @@ for n=1:freePanels
 %        Lines_instr.COATING{end+1}=sprintf('}')
         Lines_instr.COATING{end+1}=sprintf('}')
         Lines_instr.COATING{end+1}=sprintf('')
-        Lines_instr.COATING{end+1}=sprintf('printf("\\n-----Bisected %s in %%i tries ----",counter1 );',panel)
+        Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----Bisected %s in %%i tries ----",counter1 ));',panel)
         
         
         Lines_instr.COATING{end+1}=sprintf('');
@@ -458,13 +458,13 @@ for n=1:freePanels
 %         Lines_instr.COATING{end+1}=sprintf('sumOfMValues=0;');
         
         if useMSteps==1
-                Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (Start)=%%2.3f ----",mValues%i%s[0] );',panel,i,panel);
+                Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----m-value %s (Start)=%%2.3f ----",mValues%i%s[0] ));',panel,i,panel);
                 %Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (Mid)=%%2.3f ----",mValues%i%s[round(Nsegments%i/2)] );',panel,i,panel,i)
-                Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (End)=%%2.3f ----",mValues%i%s[nsegments%i-1] );',panel,i,panel,i);
+                Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----m-value %s (End)=%%2.3f ----",mValues%i%s[nsegments%i-1] ));',panel,i,panel,i);
         else 
-                Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (Start)=%%2.3f ----",mValues%i%s[0] );',panel,i,panel);
-                Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (Mid)=%%2.3f ----",mValues%i%s[49] );',panel,i,panel);
-                Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (End)=%%2.3f ----",mValues%i%s[99] );',panel,i,panel);
+                Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----m-value %s (Start)=%%2.3f ----",mValues%i%s[0] ));',panel,i,panel);
+                Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----m-value %s (Mid)=%%2.3f ----",mValues%i%s[49] ));',panel,i,panel);
+                Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----m-value %s (End)=%%2.3f ----",mValues%i%s[99] ));',panel,i,panel);
         end
          
         
@@ -490,7 +490,7 @@ for n=1:freePanels
         Lines_instr.COATING{end+1}=sprintf('Bisected=0;')
         Lines_instr.COATING{end+1}=sprintf('test1=0;')
         Lines_instr.COATING{end+1}=sprintf('mover=1;')
-        if debugPrint==1;Lines_instr.COATING{end+1}=sprintf('printf("\\n-----DEMAND PRICE =%%2.3f ----",demandPrice%i%s);',i,panel);end
+        if debugPrint==1;Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----DEMAND PRICE =%%2.3f ----",demandPrice%i%s));',i,panel);end
         if length(panel)>2
             Panel=sprintf('%s%s',upper(panel(1)),panel(2:end));
             Lines_instr.COATING{end+1}=sprintf('bisectPrice=demandPrice%i%s;',i,panel)
@@ -565,7 +565,7 @@ for n=1:freePanels
         
         %% Bisection part 2
         if Print_Bisection==1
-            if C_print==1;Lines_instr.COATING{end+1}=sprintf('printf("\\n-----Bisect try %%i -- B%i%s= %%2.2f ----",counter1,b%i%s);',i,panel,i,panel);else; end
+            if C_print==1;Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----Bisect try %%i -- B%i%s= %%2.2f ----",counter1,b%i%s));',i,panel,i,panel);else; end
         end
         Lines_instr.COATING{end+1}=sprintf('')
 
@@ -609,11 +609,11 @@ for n=1:freePanels
         Lines_instr.COATING{end+1}=sprintf('}')
         Lines_instr.COATING{end+1}=sprintf('}')
         Lines_instr.COATING{end+1}=sprintf('')
-        Lines_instr.COATING{end+1}=sprintf('printf("\\n-----Bisected %s in %%i tries ----",counter1 );',panel)
+        Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----Bisected %s in %%i tries ----",counter1 ));',panel)
         
         
         Lines_instr.COATING{end+1}=sprintf('');
-        Lines_instr.COATING{end+1}=sprintf('printf("\\n-----Target=%%2.3f Result=%%2.3f----",demandPrice%i%s,sumOfMValues);',i,panel);
+        Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----Target=%%2.3f Result=%%2.3f----",demandPrice%i%s,sumOfMValues));',i,panel);
 %         Lines_instr.COATING{end+1}=sprintf('sectionPrices+=sumOfMValues;');
 %         Lines_instr.COATING{end+1}=sprintf('priceToSave+=sumOfMValues;');
 %         Lines_instr.DECLARE{end+1}=sprintf('double priceToSave;');

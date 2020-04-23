@@ -252,7 +252,8 @@ for k=1:length(ifits)
         end
         
         if strcmp(coatingOptions.AnalyzeMode,'standard') % Standard mode will run guide_bot analysis 
-            
+		optimalLine = 'optimal=monitor(1).Data.Parameters;'
+            analyze=[analyze(1),optimalLine,analyze(2:end)]
         elseif strcmp(coatingOptions.AnalyzeMode,'manual')
             button_analyze_script = analyze;
             analyze={};
@@ -670,6 +671,7 @@ for k=1:length(ifits)
         
         if strcmp(coatingOptions.scanType,'manual') == 0
             tryL{1}=['try'];
+	    tryL{2}=['tic'];
         else
             tryL{1}=[''];
         end

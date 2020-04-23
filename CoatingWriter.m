@@ -573,7 +573,7 @@ for i=1:nInput%length(fieldnames(Input))
             Coating{end+1}=lines_instr.COATING{Q};
         end
     end
-    Coating{end+1}=sprintf('printf("\\n-----PRICE=%%2.3f k€----\\n",sectionPrices );');
+    Coating{end+1}=sprintf('MPI_MASTER(printf("\\n-----PRICE=%%2.3f k€----\\n",sectionPrices ));');
 
 
     

@@ -35,7 +35,7 @@ end
     doneSegments=0; % These values are used for the status UI
     printStep='stepScan';
     time=toc;
-    eval(printScript)
+    try;eval(printScript);end
 
 %% Set settings
     options_home.mode='simulate';
@@ -264,7 +264,7 @@ stepScanTime=tic;
                 doneSegments=doneSegments+1;
                 %% Update status
                  time=toc;
-                 eval(printScript)
+                 try;eval(printScript);end
                 %% Update array (after scan)
                     fid=fopen(['CoatingWriter_rawData' scanname '.txt'],'r');
                     n = 0;

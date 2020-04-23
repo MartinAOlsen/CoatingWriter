@@ -50,7 +50,7 @@ tic
 %%%%%%%%%%
 printStep='initialize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 
 ParNames=fieldnames(p);
@@ -94,7 +94,7 @@ Result_this.valueList=ValueList;
 %%%%%%%%%%
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 delete (['priceList' scanname '.txt']);delete (['priceListPunished' scanname '.txt']);
 
@@ -126,7 +126,7 @@ Result_this.valueList=[Result_this.valueList;ValueList];
 %%%%%%%%%%
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 delete (['priceList' scanname '.txt']);delete (['priceListPunished' scanname '.txt']);
 filenameA=[filename '_coating'];
@@ -164,7 +164,7 @@ scannameA=[scanname '_all'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 
 for i=1:length(GeometryParList)
@@ -205,7 +205,7 @@ scannameA=[scanname '_geometry_2'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 %% ADDANALYSIS %%
 
@@ -236,7 +236,7 @@ scannameA=[scanname '_coating_2'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 %% ADDANALYSIS %%
 
@@ -268,7 +268,7 @@ scannameA=[scanname '_all_2'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 for i=1:length(GeometryParList)
     eval(['p.' GeometryParList{i} '=[p.' GeometryParList{i} '(1) pars.' GeometryParList{i} ' p.' GeometryParList{i} '(3)]'])
@@ -308,7 +308,7 @@ scannameA=[scanname '_geometry_3'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 %% ADDANALYSIS %%
 
@@ -338,7 +338,7 @@ scannameA=[scanname '_coating_3'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 %% ADDANALYSIS %%
 
@@ -370,7 +370,7 @@ scannameA=[scanname '_all_3'];
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 %% ADDANALYSIS %%
 
@@ -381,6 +381,6 @@ eval(printScript)
 %%%%%%%%%% Print
 printStep='analyze';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 monitor_ideal=monitor;

@@ -46,7 +46,7 @@ steps=3;
 %%%%%%%%%%
 printStep='initialize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 
 fileID=fopen('out_CW.txt','w')
@@ -102,7 +102,7 @@ delete (['priceList' scanname '.txt']);delete (['priceListPunished' scanname '.t
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 filenameA=[filename '_geometry'];
 scannameA=[scanname '_geometry'];
@@ -140,7 +140,7 @@ delete (['priceList' scanname '.txt']);delete (['priceListPunished' scanname '.t
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 filenameA=[filename '_coating'];
 scannameA=[scanname '_coating'];
@@ -175,7 +175,7 @@ delete (['priceList' scanname '.txt']);delete (['priceListPunished' scanname '.t
 %%%%%%%%%% Print
 printStep='optimize';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 TimeTable.thirdRun=toc(Timing_ThirdRun);
 
@@ -198,7 +198,7 @@ TimeTable.stepScan=toc(Timing_StepScan);
 %%%%%%%%%% Print
 printStep='analyze';
 time=toc;
-eval(printScript)
+try;eval(printScript);end
 %%%%%%%%%%
 
 monitor_ideal=monitor;
