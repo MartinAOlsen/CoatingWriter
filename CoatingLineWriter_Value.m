@@ -308,13 +308,17 @@ for n=1:freePanels
 %         Lines_instr.COATING{end+1}=sprintf('sumOfMValues=0;');
         
         if useMSteps==1
-                Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----m-value %s (Start)=%%2.3f ----",mValues%i%s[0] ));',panel,i,panel);
+		Lines_instr.COATING{end+1}='MPI_MASTER('
+                Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (Start)=%%2.3f ----",mValues%i%s[0] );',panel,i,panel);
                 %Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (Mid)=%%2.3f ----",mValues%i%s[round(Nsegments%i/2)] );',panel,i,panel,i)
-                Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----m-value %s (End)=%%2.3f ----",mValues%i%s[nsegments%i-1] ));',panel,i,panel,i);
+                Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (End)=%%2.3f ----",mValues%i%s[nsegments%i-1] );',panel,i,panel,i);
+		Lines_instr.COATING{end+1}=')'
         else 
-                Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----m-value %s (Start)=%%2.3f ----",mValues%i%s[0] ));',panel,i,panel);
-                Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----m-value %s (Mid)=%%2.3f ----",mValues%i%s[49] ));',panel,i,panel);
-                Lines_instr.COATING{end+1}=sprintf('MPI_MASTER(printf("\\n-----m-value %s (End)=%%2.3f ----",mValues%i%s[99] ));',panel,i,panel);
+		Lines_instr.COATING{end+1}='MPI_MASTER('
+                Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (Start)=%%2.3f ----",mValues%i%s[0] );',panel,i,panel);
+                Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (Mid)=%%2.3f ----",mValues%i%s[49] );',panel,i,panel);
+                Lines_instr.COATING{end+1}=sprintf('printf("\\n-----m-value %s (End)=%%2.3f ----",mValues%i%s[99] );',panel,i,panel);
+		Lines_instr.COATING{end+1}=')'
         end
         
         

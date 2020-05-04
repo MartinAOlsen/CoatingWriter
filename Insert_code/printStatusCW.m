@@ -49,7 +49,9 @@ else
             end
         end
     end
-    if exist('o') && strcmp(printStep,'optimize') 
+    if exist('nFUN_EVALS')
+	iters = nFUN_EVALS;
+    elseif exist('o') && strcmp(printStep,'optimize') 
         iters=iters+length(o.criteriaHistory);
     end
 end
@@ -62,21 +64,21 @@ end
 %A=importdata('RunStatus.txt');
 
 fileID=fopen([RunStatuspath '/RunStatus.txt'],'r'); 
-i = 1;
+II = 1;
 tline = fgetl(fileID);
-A{i} = tline;
+A{II} = tline;
 while ischar(tline)
-	i = i+1;
+	II = II+1;
 	tline = fgetl(fileID);
-	A{i} = tline;
+	A{II} = tline;
 end
 A(end)=[];  
 fclose(fileID); 
 
-for i=1:length(A)
-    if strfind(A{i},sprintf('%3i |',runID))
-        ID=i;
-        i=length(A);
+for II=1:length(A)
+    if strfind(A{II},sprintf('%3i |',runID))
+        ID=II;
+        II=length(A);
     end
 end
 
@@ -84,23 +86,26 @@ end
 switch printStep
     case 'stepScan' 
         stepwiseProgress=100*doneSegments/totalSegments;
-        A{ID}=sprintf('%3i | %15s |%11s| %i/%i (%3.1f%%)| %9.6f | %5.2f | %5i |',runID,[instrument_name scanname],'stepScan',step,steps,stepwiseProgress,Intensity,Price,iters)
+        A{ID}=sprintf('%3i | %15s |%11s| %i/%i (%3.1f%%)| %9.6f | %5.2f | %5i |',runID,[instrument_name scanname],'stepScan',step,steps,stepwiseProgress,Intensity,Price,iters);
     case 'optimize' 
-        A{ID}=sprintf('%3i | %15s |%11s|    %i/%i    | %9.6f | %5.2f | %5i |',runID,[instrument_name scanname],'Optimizing',step,steps,Intensity,Price,iters)
+        A{ID}=sprintf('%3i | %15s |%11s|    %i/%i    | %9.6f | %5.2f | %5i |',runID,[instrument_name scanname],'Optimizing',step,steps,Intensity,Price,iters);
     case 'initialize'
-        A{end+1}=sprintf('%3i | %15s |%11s|    %i/%i    |   %5s   | %7s | %5s |',runID,[instrument_name scanname],'Optimizing',0,steps,'n/a','n/a','n/a')
+        A{end+1}=sprintf('%3i | %15s |%11s|    %i/%i    |   %5s   | %7s | %5s |',runID,[instrument_name scanname],'Optimizing',0,steps,'n/a','n/a','n/a');
     case 'analyze'
-        A{ID}=sprintf('%3i | %15s |%11s|    %i/%i    | %9.6f | %5.2f | %5i |',runID,[instrument_name scanname],'Analyzing',step,steps,Intensity,Price,iters)
+        A{ID}=sprintf('%3i | %15s |%11s|    %i/%i    | %9.6f | %5.2f | %5i |',runID,[instrument_name scanname],'Analyzing',step,steps,Intensity,Price,iters);
     case 'finish'
-        A{ID}=sprintf('%3i | %15s |%11s|    %i/%i    | %9.6f | %5.2f | %5i |',runID,[instrument_name scanname],'Finished',step,steps,Intensity,Price,iters)
+        A{ID}=sprintf('%3i | %15s |%11s|    %i/%i    | %9.6f | %5.2f | %5i |',runID,[instrument_name scanname],'Finished',step,steps,Intensity,Price,iters);
     case 'failed' 
-        A{ID}=sprintf('%3i | %15s |%11s|    %i/%i    |   %5s   | %7s | %5s |',runID,[instrument_name scanname],'Failed',step,steps,'n/a','n/a','n/a')
+        A{ID}=sprintf('%3i | %15s |%11s|    %i/%i    |   %5s   | %7s | %5s |',runID,[instrument_name scanname],'Failed',step,steps,'n/a','n/a','n/a');
 end
 done=1;
     
 
-fileID=fopen([RunStatuspath '/RunStatus.txt'],'w')
-for i=1:length(A)
-    fprintf(fileID,'%s\n',A{i})
+fileID=fopen([RunStatuspath '/RunStatus.txt'],'w');
+
+fileID=fopen([RunStatuspath '/RunStatus.txt'],'w');
+for I=1:length(A)
+    fprintf(fileID,'%s\n',A{II})
 end  
-fclose(fileID); 
+fclose(fileID);  
+

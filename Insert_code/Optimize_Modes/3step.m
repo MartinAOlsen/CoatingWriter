@@ -86,7 +86,7 @@ step=1;
 % lock variables to guess-values
 tempPar=p;
 for i=1:length(CoatingParList)
-    eval(['tempPar.' CoatingParList{i} '=num2str(p.' CoatingParList{i} '(2))'])
+    eval(['tempPar.' CoatingParList{i} '=num2str(p.' CoatingParList{i} '(2));'])
 end
 
 % INSERT FIRST INSTRUMENT HERE!
@@ -109,7 +109,7 @@ scannameA=[scanname '_geometry'];
 %% Update p guess
 pFNames=fieldnames(pars);
 for i = 1 : length(pFNames)
-    eval(['p.' pFNames{i} '= [p.' pFNames{i} '(1), pars. ' pFNames{i} ',p.' pFNames{i} ']'])
+    eval(['p.' pFNames{i} '= [p.' pFNames{i} '(1), pars. ' pFNames{i} ',p.' pFNames{i} '];'])
 end
 
 TimeTable.firstRun=toc(Timing_FirstRun);
@@ -122,7 +122,7 @@ step=2;
 Timing_SecondRun=tic;
 tempPar=p;
 for i=1:length(GeometryParList)
-    eval(['tempPar.' GeometryParList{i} '=num2str(pars.' GeometryParList{i} ')'])
+    eval(['tempPar.' GeometryParList{i} '=num2str(pars.' GeometryParList{i} ');'])
 end
 
 [pars,monitor,m,o]=mcstas([instrument_name '_optimize.instr'],tempPar,options{select});
@@ -147,7 +147,7 @@ scannameA=[scanname '_coating'];
 %% Update p guess
 pFNames=fieldnames(pars);
 for i = 1 : length(pFNames)
-    eval(['p.' pFNames{i} '= [p.' pFNames{i} '(1), pars. ' pFNames{i} ',p.' pFNames{i} ']'])
+    eval(['p.' pFNames{i} '= [p.' pFNames{i} '(1), pars. ' pFNames{i} ',p.' pFNames{i} '];'])
 end
 TimeTable.secondRun=toc(Timing_SecondRun);
 
@@ -158,7 +158,7 @@ step=3;
 tempPar=p;
 Timing_ThirdRun=tic;
 for i=1:length(GeometryParList)
-    eval(['tempPar.' GeometryParList{i} '=[p.' GeometryParList{i} '(1) pars1.' GeometryParList{i} ' p.' GeometryParList{i} '(3)]'])
+    eval(['tempPar.' GeometryParList{i} '=[p.' GeometryParList{i} '(1) pars1.' GeometryParList{i} ' p.' GeometryParList{i} '(3)];'])
 end
 
 [pars,monitor,m,o]=mcstas([instrument_name '_optimize.instr'],tempPar,options{select});

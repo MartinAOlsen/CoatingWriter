@@ -34,7 +34,11 @@ options_single_cluster.gravitation=1;
 options_single_cluster.compile=0;
 options_single_cluster.ncount=1*5e8;
 
+% Run for fom wavelengths
+optimal_visualizer = optimal;
 options_single={options_single_home options_single_cluster};
+optimal_visualizer.file_name = [filename '_geometry.dat']
+monitor_fom=mcstas([instrument_name '_analyze.instr'],optimal_visualizer,options_single{select});
 
 optimal.WaveMin='0.1';
 optimal_ess.WaveMin='0.1';
@@ -45,8 +49,7 @@ MaxWB=str2num(optimal.WaveMax);
 % Run for all wavelengths
 options_single{select}.dir=[filename 'waveLarge'];
 optimal_visualizer = optimal;
-optimal_visualizer.file_name = [filename '_geometry.dat'];
 
-monitor_ALLW=mcstas([instrument_name '_analyze.instr'],optimal_visualizer,options_single{select});
+%monitor_ALLW=mcstas([instrument_name '_analyze.instr'],optimal_visualizer,options_single{select});
 
 save([filename '_all.mat']);

@@ -23,12 +23,13 @@ time=toc;
 try;eval(printScript);end
 %%%%%%%%%%
 step=1;
-[pars,monitor,m,o]=mcstas([instrument_name '_optimize.instr'],p,options{select});
+addpath(genpath(pwd))
+[pars,monitor,m,o] = mcstas([instrument_name '_optimize.instr'],p,options{select});
 pars1=pars;
 runResults(1)=o.criteriaBest;
 ValueList=load(['priceList' scanname '.txt']);
 ValueList=ValueList(1:end-1);
-ValueList(2:length(o.criteriaHistory)+1,2)=o.criteriaHistory';
+ValueList(1:length(o.criteriaHistory),2)=o.criteriaHistory';
 tmp=load(['priceListPunished' scanname '.txt']);
 ValueList(:,3)=tmp(1:length(ValueList));
 Result_this.valueList=ValueList;

@@ -162,7 +162,12 @@ A{end+1}=['% Change neutron counts:'];
 A{end+1}=['%    SpeedScanMode reduces the neutron count to 1*10^6 (1/9) and runs optimizations on a single core instead of 12 on ESS cluster.'];
 A{end+1}=['%    If punishment method is ''potential'' the neutron count will be decreased if the price error is high to increase performance.']
 A{end+1}=['CW_input.SpeedScanMode=''off'''];
-
+A{end+1}=[''];
+A{end+1}=['% Optimizer engine'];
+A{end+1}=['%     Choose from:'];
+A{end+1}=['%     iFit      Uses iFit optimization with particle swarm'];
+A{end+1}=['%     CW_PSO    Particle swarm modified for use with CoatingWriter'];
+A{end+1}=['CW_input.OptimizerEngine=''CW_PSO'''];
 
 %% Add path and "run CW"
  A{end+1}=[''];

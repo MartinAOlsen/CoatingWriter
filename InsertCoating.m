@@ -80,6 +80,8 @@ copyfile([P slash 'guifiles' slash 'optim_random.m'],[coatingOptions.filePath sl
 copyfile([P slash 'guifiles' slash 'optim_Walker.m'],[coatingOptions.filePath slash 'optim_Walker.m']);
 copyfile([P slash 'guifiles' slash 'runMcStas.m'],[coatingOptions.filePath slash 'runMcStas.m']);
 
+copyfile([P slash 'Insert_code' slash 'CW_PSO.m'],[coatingOptions.filePath slash 'CW_PSO.m']);
+
 copyfile([P slash 'Insert_code' slash 'simpleSim.m'],[coatingOptions.filePath slash 'simpleSim.m']);
 copyfile([P slash 'Insert_code' slash 'parFun.m'],[folderPath 'parFun.m']);
 copyfile([P slash 'Insert_code' slash 'maxLine.m'],[folderPath 'maxLine.m']);
@@ -734,6 +736,41 @@ for k=1:length(ifits)
             newIfitFile=[tryL,first,optimize,mid,analyze,printFinish,writeResult]
         end
         
+	if strcmp(coatingOptions.optimizerEngine,'CW_PSO')
+		cutList=[];
+		for i=1:length(newIfitFile)
+			if strfind(newIfitFile{i},'optimize.in')
+				cutList(end+1) = i;
+			end
+        end
+        useFun = 0;
+        if useFun == 1
+            for i = 1:length(cutList)
+                id = strfind(newIfitFile{cutList(i)},'mcstas');
+                newIfitFile{cutList(i)} = [newIfitFile{cutList(i)}(1:id-1) 'CW_PSO' newIfitFile{cutList(i)}(id+6:end)];
+            end
+        else
+            
+            for i = length(cutList):-1:1
+                psofile=fileread([CWfolder '/Insert_code/CW_PSO_script.m']);
+                % Find input names
+                line=newIfitFile{cutList(i)};
+                id1 = strfind(newIfitFile{cutList(i)},'(');
+                tmp = strfind(newIfitFile{cutList(i)},',');
+                id2 = min(tmp(tmp>id1));
+                id3 = min(tmp(tmp>id2));
+                id4 = strfind(newIfitFile{cutList(i)},')');
+                psofile = sprintf('instrName = %s;\n%s',line(id1+1:id2-1),psofile);
+                psofile = sprintf('p_optim = %s;\n%s',line(id2+1:id3-1),psofile);
+                psofile = sprintf('OPTIONS = %s;\n%s',line(id3+1:id4-1),psofile);
+                
+                
+                newIfitFile{cutList(i)} = psofile;
+            end
+        end
+        
+	end
+
 
         %fileID=fopen([coatingOptions.filePath '/' char(ifits(k))],'w');
         fileID=fopen([char(ifits{k})],'w');
@@ -970,7 +1007,7 @@ for instrFile=1:length(fileList)
                 out1{end+1}='fclose(priceFile);';
                 out1{end+1}=['FILE *priceFilePunished=fopen(fileP,"a");'];
                 out1{end+1}=['fprintf(priceFilePunished,"%2.5f\n",sectionPrices);'];
-                out1{end+1}='fclose(priceFile);';
+                out1{end+1}='fclose(priceFilePunished);';
                 out1{end+1}=')';
                 logOnce=1;
                 
@@ -1037,7 +1074,7 @@ for instrFile=1:length(fileList)
                 out1{end+1}='fclose(priceFile);';
                 out1{end+1}=['FILE *priceFilePunished=fopen(fileP,"a");'];
                 out1{end+1}=['fprintf(priceFilePunished,"%2.5f\n",sectionPrices);'];
-                out1{end+1}='fclose(priceFile);';
+                out1{end+1}='fclose(priceFilePunished);';
 %                 out1{end+1}=')';
                 logOnce=1;
             end
