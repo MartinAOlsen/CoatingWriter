@@ -35,7 +35,10 @@ if isfield(p,'totalPrice')
 end
 Result_this.resultPrice=Price;        % Price
 Result_this.parameterList=p; 
-Result_this.Monitor=monitor_ALLW;
+Result_this.Monitor=monitor_fom;
+try
+	Result_this.Monitor_ALL=monitor_ALL;
+end
 
 if makeNew==0
     Result(end+1)=Result_this;

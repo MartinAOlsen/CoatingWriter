@@ -351,7 +351,7 @@ for i = 1:OPTIONS.MaxIter,
     if OPTIONS.PlotProgress == 1
 	if i == 1
 		close all
-        	figure('Renderer', 'painters', 'Position', [10 10 900 500])
+        	figure('Renderer', 'painters', 'Position', [10 10 1200 500])
 	end
         subplot(1,3,1)
         hold on
@@ -388,8 +388,8 @@ for i = 1:OPTIONS.MaxIter,
             scatter(i,Change,25,'filled');
             line([0,i],[abs(str2num(OPTIONS.TolFun_char(1:end-1))/100),abs(str2num(OPTIONS.TolFun_char(1:end-1))/100)])
             title('Change of best')
-            xlabel('change')
-            ylabel('iter')
+            xlabel('iter')
+            ylabel('stopping criteria')
         else
             scatter(i,0,25,'filled');
         end

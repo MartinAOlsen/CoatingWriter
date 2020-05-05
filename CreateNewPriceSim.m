@@ -184,6 +184,8 @@ for i=1:length(priceList)
         launch_home{end+1}=['run(''' char(ifits{j}) ''')'];
     end
     launch_home{end+1}='cd(thisFolder)';
+    launch_home{end+1}='clear all'
+    launch_home{end+1}='thisFolder = cd;'
     
     %% Add line to home-computer launch all - parallel file
     if ParWorks==1

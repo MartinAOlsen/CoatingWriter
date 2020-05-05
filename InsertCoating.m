@@ -681,14 +681,14 @@ for k=1:length(ifits)
         printFinish{1}=['%%%%%%%%%% Print'];
         printFinish{2}=['printStep=''finish'';'];
         printFinish{3}=['time=toc;'];
-        printFinish{4}=['eval(printScript)'];
+        printFinish{4}=['try;eval(printScript);end'];
         printFinish{5}=['%%%%%%%%%%'];
         if strcmp(coatingOptions.scanType,'manual')==0
         printFinish{6}=['catch ME'];
         printFinish{7}=['    %%%%%%%%%% Print'];
         printFinish{8}=['    printStep=''failed'';'];
         printFinish{9}=['    time=toc;'];
-        printFinish{10}=['    eval(printScript)'];
+        printFinish{10}=['    try;eval(printScript);end'];
         printFinish{11}=['    %%%%%%%%%%'];
         printFinish{12}=['    rethrow(ME)'];
         printFinish{13}=['end'];
