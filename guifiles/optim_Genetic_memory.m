@@ -2,6 +2,9 @@ function [thisGeneration,options,History] = optim_Genetic(thisGeneration,options
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
+MutateRate = 0.10;
+DeathChance = 0.00;
+
 %% Figure out how good each pop performed
 for j= 1:options.populationsize
     critlist(j) = eval(['History(options.generation-1).criteria{' num2str(j) '}{1};']) * options.weights(j);
@@ -52,12 +55,15 @@ for i = 1 : options.populationsize
     parents(2) = bestIndex_short(randi(numel(bestIndex_short)));
     % determine what parent gives what genome:
     for j = 1 : numel(History(1).Pars{1})
-        genomeParent = randi(2);
-        newPop(j,i) = options.Parrents.pars(j,parents(genomeParent));
-        if rand < 0.05 % mutate
+        if rand < DeathChance 
             newPop(j,i) = rand;
+        else
+            genomeParent = randi(2);
+            newPop(j,i) = options.Parrents.pars(j,parents(genomeParent));
+            if rand < MutateRate % mutate
+                newPop(j,i) = rand;
+            end
         end
-        
     end
 end
 

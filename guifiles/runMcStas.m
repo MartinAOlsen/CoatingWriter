@@ -14,15 +14,17 @@
     McString = [McString ' --gravitation'];
     %McString = [McString ' --overwrite'];
     %McString = [McString ' -c'];
+    if ischar(p)
     McString = [McString ' ' p];
-    
-%     for i = 1:length(fNames.all)
-%         McString = [McString ' ' fNames.all{i} '=' eval(['p.' fNames.all{i}]) ];
-%     end
+    elseif (isstruct(p))
+         for i = 1:length(fNames.all)
+             McString = [McString ' ' fNames.all{i} '=' eval(['p.' fNames.all{i}]) ];
+         end
+    end
 
     try; unix(['rm -rf ' options.dir '_' num2str(options.generation) '_' num2str(id)]);end
  
-    [supress,output] = unix(McString);
+    [supress,output] = system(McString);
     %unix(McString)
     
     

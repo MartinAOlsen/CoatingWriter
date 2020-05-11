@@ -583,7 +583,7 @@ for i=1:nInput%length(fieldnames(Input))
     
     %% INSTR Collect M Values
     if strcmp(coatingOptions.scanType,'manual')
-       lines_instr.Monitor{end+1} =  'COMPONENT Div2d_sample_B = CoatingWriter_monitor(filename = "Monitor.txt", xwidth = sizeX,yheight = sizeY, maxdiv_h = divreq_x, maxdiv_v = divreq_y,Price=sectionPrices+TotalSubstratePrice,min_lambda=1.5,max_lambda=WaveMax,background_min_lambda=0.1,background_max_lambda=1.5)';
+       lines_instr.Monitor{end+1} =  'COMPONENT Div2d_sample_B = CoatingWriter_monitor(filename = "Monitor.txt", xwidth = sizeX,yheight = sizeY, maxdiv_h = divreq_x, maxdiv_v = divreq_y,Price=sectionPrices+TotalSubstratePrice,min_lambda=WaveMin,max_lambda=WaveMax,background_min_lambda=0.1,background_max_lambda=1.5)';
        lines_instr.Monitor{end+1} = 'AT (0, 0,sample_dist) RELATIVE PREVIOUS';
        lines_instr.Monitor{end+1} = '';
        lines_instr.Monitor{end+1} = '';

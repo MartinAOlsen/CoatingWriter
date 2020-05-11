@@ -76,6 +76,7 @@ copyfile([P slash 'guifiles' slash 'optim_Genetic_memory.m'],[coatingOptions.fil
 copyfile([P slash 'guifiles' slash 'optim_Genetic_memory_noWeights.m'],[coatingOptions.filePath slash 'optim_Genetic_memory_noWeights.m']);
 copyfile([P slash 'guifiles' slash 'optim_Genetic_memory_prop.m'],[coatingOptions.filePath slash 'optim_Genetic_memory_prop.m']);
 copyfile([P slash 'guifiles' slash 'optim_Genetic_weights.m'],[coatingOptions.filePath slash 'optim_Genetic_weights.m']);
+copyfile([P slash 'guifiles' slash 'PlotEnvelope.m'],[coatingOptions.filePath slash 'PlotEnvelope.m']);
 copyfile([P slash 'guifiles' slash 'optim_random.m'],[coatingOptions.filePath slash 'optim_random.m']);
 copyfile([P slash 'guifiles' slash 'optim_Walker.m'],[coatingOptions.filePath slash 'optim_Walker.m']);
 copyfile([P slash 'guifiles' slash 'runMcStas.m'],[coatingOptions.filePath slash 'runMcStas.m']);

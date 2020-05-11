@@ -9,7 +9,12 @@ for i = 1 : length(criterias)
 end
 
 options.weights = exp(options.weightrange *  [-options.populationsize/2:options.populationsize/2] ./options.populationsize);
-
+options.weights = 0.5*power([2/options.populationsize:2/options.populationsize:2],options.weightrange);
+% options.weights = 1+randn(options.populationsize,1);
+%options.weights = ones(options.populationsize,1)
+%weightList = 2*([1:options.maxIter]/options.maxIter).^0.5;
+weightList = ([1:options.maxIter]/options.maxIter);
+options.weightsmodifier = randn(options.populationsize,1);
 
 %% Compile instrument
     fprintf('compiling...')
@@ -46,7 +51,11 @@ fNames.variables=fieldnames(variables);
 
 %% Optimizer loop
 while options.generation < options.maxIter
+    
     options.generation = options.generation +1;
+    %options.weights = [0.25 + 1.5/options.populationsize:1.5/options.populationsize:1.75]  * weightList(options.generation);
+    options.weights = 1.5 - weightList(options.generation) * options.weightsmodifier;
+    options.weights(options.weights<0) = 0;
     
     if options.generation == 1
         History(options.generation).probagated_forward = ones(options.populationsize,1);
@@ -59,12 +68,15 @@ while options.generation < options.maxIter
     if options.generation == 1
         thisGeneration.pars = rand(length(fNames.variables),options.populationsize);
         
+        
         %% Make first organism in population the guess from input
         for i = 1 : length(fNames.variables) 
             varSize = max(eval(['p.' fNames.variables{i}])) - min(eval(['p.' fNames.variables{i} ';']));
             %thisGeneration.pars(:,:) = ( eval(['variables.' fNames.variables{i} '(2)']) - min(eval(['p.' fNames.variables{i} ';']))) / varSize;
-            thisGeneration.pars(1,:) = ( eval(['variables.' fNames.variables{i} '(2)']) - min(eval(['p.' fNames.variables{i} ';']))) / varSize;
-            
+            thisGeneration.pars(i,1) = ( eval(['variables.' fNames.variables{i} '(2)']) - min(eval(['p.' fNames.variables{i} ';']))) / varSize;
+            thisGeneration.pars(i,2) = 0;
+            thisGeneration.pars(i,3) = 1;
+           
         end
     end
     
@@ -148,10 +160,10 @@ while options.generation < options.maxIter
         History(options.generation).normPars(j) = {thisGeneration.pars(:,j)};
         %History(options.generation).AllParameterList(j) = constants;
         for k = 1:length(fNames_variables)
-            eval(['History(options.generation).AllParameterList(j). ' fNames_variables{k} ' = thisPars.' fNames_variables{k} ' ;']);
+            eval(['History(options.generation).AllParameterList(j). ' fNames_variables{k} ' = thisPars(j).' fNames_variables{k} ' ;']);
         end
         for k = 1:length(fNames.constants)
-            eval(['History(options.generation).AllParameterList(j). ' fNames.constants{k} ' = thisPars.' fNames.constants{k} ' ;']);
+            eval(['History(options.generation).AllParameterList(j). ' fNames.constants{k} ' = thisPars(j).' fNames.constants{k} ' ;']);
         end
     end
     
@@ -186,24 +198,27 @@ while options.generation < options.maxIter
         clist = jet(options.populationsize);
            
         if plotGradual== 1
-            hold off 
+            
             Cmap = jet(options.maxIter);
-            for j = 1:options.generation
+%             for j = 1:options.generation
                 for i = 1 : options.populationsize
-                    c1 = eval(['History(j).results(i).' criterias{1}]);
-                    c2 = eval(['History(j).results(i).' criterias{2}]);
+                    c1(i) = eval(['History(end).results(i).' criterias{1}]);
+                    c2(i) = eval(['History(end).results(i).' criterias{2}]);
+                end
                     %errorbar(c2,c1,eval(['History(options.generation).results(i).' criterias{1} '_error'])/2,'o','Color',clist(i,:),'MarkerSize',10,'Marker','.');
 			if (j<options.generation)
-                    		scatter(c2,c1,15,Cmap(j,:),'filled')
+                    		scatter(c2,c1,15,Cmap(options.generation,:),'filled')
 			else
-				scatter(c2,c1,15,Cmap(j,:),'filled','edgecolor',[1,0,0],'LineWidth',0.6)
-			end
-			xlabel('Price [1000 euro]')
-			ylabel('intensity []')
-                    hold on
-                end
+				scatter(c2,c1,15,Cmap(options.generation,:),'filled','LineWidth',0.6)
             end
-            pause(0.5)
+            if options.generation == 1
+                xlabel('Price [1000 euro]')
+                ylabel('intensity []')
+            end
+                    hold on
+                
+%             end
+            pause(0.15)
         else
         hold on
         for i = 1 : options.populationsize
