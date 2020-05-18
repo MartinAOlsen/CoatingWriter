@@ -2,11 +2,23 @@
     
     
     run = tic;
-        
-    McString = ['mcrun'];
-    McString = [McString ' ' filename];
+    % Currently this is only supported with MPIRUN due to calls in monitor
+    % (WorldSize)
+    if options.mpi  > 0 
+        McString = ['mpirun'];
+        ID = strfind(filename,'.instr');
+        filename = [filename(1:ID) 'out'];
+        McString = [McString ' ' filename];
+        McString = [McString ' --mpi ' num2str(options.mpi) ''];
+    else
+        McString = ['./'];
+        ID = strfind(filename,'.instr');
+        filename = [filename(1:ID) 'out'];
+        McString = [McString filename];
+    end
+    
+    
     McString = [McString ' --dir ' options.dir '_' num2str(options.generation) '_' num2str(id)];
-    McString = [McString ' --mpi ' num2str(options.mpi) ''];
     McString = [McString ' -n ' num2str(options.ncount)];
     if isfield(options,'seed')
         McString = [McString ' --seed ' num2str(options.seed)];

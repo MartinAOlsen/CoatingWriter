@@ -79,6 +79,8 @@ copyfile([P slash 'guifiles' slash 'optim_Genetic_weights.m'],[coatingOptions.fi
 copyfile([P slash 'guifiles' slash 'PlotEnvelope.m'],[coatingOptions.filePath slash 'PlotEnvelope.m']);
 copyfile([P slash 'guifiles' slash 'optim_random.m'],[coatingOptions.filePath slash 'optim_random.m']);
 copyfile([P slash 'guifiles' slash 'optim_Walker.m'],[coatingOptions.filePath slash 'optim_Walker.m']);
+copyfile([P slash 'guifiles' slash 'optim_ParetoPSO.m'],[coatingOptions.filePath slash 'optim_ParetoPSO.m']);
+copyfile([P slash 'guifiles' slash 'optim_ParetoSearch.m'],[coatingOptions.filePath slash 'optim_ParetoSearch.m']);
 copyfile([P slash 'guifiles' slash 'runMcStas.m'],[coatingOptions.filePath slash 'runMcStas.m']);
 
 copyfile([P slash 'Insert_code' slash 'CW_PSO.m'],[coatingOptions.filePath slash 'CW_PSO.m']);
@@ -821,7 +823,7 @@ for instrFile=1:length(fileList)
         while i<length(A)-1
             if strcmp(coatingOptions.scanType,'manual') &&  sum(strfind(char(fileList{instrFile}),'optimize'))>0
                 if strfind(A{i},'COMPONENT Div2d_sample_B = Divergence_monitor(')>0
-                    A{i}= ['COMPONENT CW_mon = CoatingWriter_monitor(filename = "Monitor.txt", xwidth = sizeX,yheight = sizeY, maxdiv_h = divreq_x, maxdiv_v = divreq_y,Price=sectionPrices+TotalSubstratePrice,min_lambda=1.5,max_lambda=WaveMax,background_min_lambda=' num2str(coatingOptions.WavelengthBackgroundMin)  ',background_max_lambda=' num2str(coatingOptions.WavelengthBackgroundMax) ')'];
+                    A{i}= ['COMPONENT CW_mon = CoatingWriter_monitor(filename = "Monitor.txt", xwidth = sizeX,yheight = sizeY, maxdiv_h = divreq_x, maxdiv_v = divreq_y,Price=sectionPrices+TotalSubstratePrice,min_lambda=WaveMin,max_lambda=WaveMax,background_min_lambda=' num2str(coatingOptions.WavelengthBackgroundMin)  ',background_max_lambda=' num2str(coatingOptions.WavelengthBackgroundMax) ')'];
                 end
                 if strfind(A{i},'    nh = 20, nv = 20, filename = "Div2d_sample_B", xwidth = sizeX,')>0
                     A{i}= 'AT (0, 0, sample_dist) RELATIVE PREVIOUS';
@@ -832,16 +834,16 @@ for instrFile=1:length(fileList)
                 if strfind(A{i},'AT (0, 0,sample_dist) RELATIVE PREVIOUS')>0
                      A{i}=''
                 end
-                if strfind(A{i},'dLambda = 0.5*(WaveMax - WaveMin);')> 0
-                    A{i} = ['dLambda = 0.5*(WaveMax - ' num2str(coatingOptions.WavelengthBackgroundMin) ');']
-                end
-                if strfind(A{i},'Lambda0 = dLambda+WaveMin;')> 0
-                    if coatingOptions.WavelengthBackgroundMin == 0
-                        A{i} = ['Lambda0 = dLambda+' num2str(coatingOptions.WavelengthBackgroundMin+0.00001) ';']
-                    else
-                        A{i} = ['Lambda0 = dLambda+' num2str(coatingOptions.WavelengthBackgroundMin) ';']
-                    end
-                end
+                %if strfind(A{i},'dLambda = 0.5*(WaveMax - WaveMin);')> 0
+                %    A{i} = ['dLambda = 0.5*(WaveMax - ' num2str(coatingOptions.WavelengthBackgroundMin) ');']
+                %end
+                %if strfind(A{i},'Lambda0 = dLambda+WaveMin;')> 0
+                %    if coatingOptions.WavelengthBackgroundMin == 0
+                %        A{i} = ['Lambda0 = dLambda+' num2str(coatingOptions.WavelengthBackgroundMin+0.00001) ';']
+                %    else
+                %        A{i} = ['Lambda0 = dLambda+' num2str(coatingOptions.WavelengthBackgroundMin) ';']
+                %    end
+                %end
             end
             
             

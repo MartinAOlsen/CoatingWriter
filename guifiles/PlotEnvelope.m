@@ -4,6 +4,9 @@ function [] = PlotEnvelope(refine)
 
 % the resolution specified. 
 
+%% Params
+slopePower = 2;  % The bias of the algorithm to find closer points. If 1 only slope counts - if inf all increases in I will give a new point
+
 %% Load data and handle errors
 try
     load('CW_GUI_DATA.mat')
@@ -70,7 +73,7 @@ while true
            co = co +1;
            dP = CriteriaList(i,2) - CriteriaList(PointsList(end),2);
            dI = CriteriaList(i,1) - CriteriaList(PointsList(end),1);
-           this_slope(i) = dI / dP;
+           this_slope(i) = dI / (dP^slopePower);
        else 
            this_slope(i) = -1;
        end
@@ -102,7 +105,7 @@ figure(1)
 scatter(CriteriaList(:,2),CriteriaList(:,1)/ref,5,[0.75,0.75,0.75],'filled')
 hold on
 errorbar(CriteriaList(PointsList,2),CriteriaList(PointsList,1)/ref,CriteriaList(PointsList,17)/ref)
-
+axis([0,1.1*CriteriaList(PointsList(end),2),0,1.1*CriteriaList(PointsList(end),1)/ref])
 xlabel('Price [k€]')
 if ref == 1
     ylabel('Intensity []')

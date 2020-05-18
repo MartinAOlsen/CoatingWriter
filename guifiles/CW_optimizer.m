@@ -1,20 +1,59 @@
 function Best = CW_optimizer(p,options,criterias,filename);
 clc; close all; fprintf('\nSTARTING CW OPTIMIZER\n')
+
+if isfield(options,'RamDisk')
+    if options.RamDisk ==1
+        if isdir('/mnt/ramdisk') == 0
+            system('sudo mkdir /mnt/ramdisk')
+            system('sudo mount -t tmpfs -o rw,size=2G tmpfs /mnt/ramdisk')
+        end
+        tmp = regexp(options.dir,'/','split');
+        options.dir = ['/mnt/ramdisk/' tmp{end-2} '/' tmp{end-1} '/' tmp{end}];
+        cdRDISK = ['/mnt/ramdisk/' tmp{end-2} '/' tmp{end-1}];
+        thisPath = cd;
+        list=dir;
+        for i = 3:length(list)
+           copyfile([thisPath '/' list(i).name],[cdRDISK '/' list(i).name]) 
+        end
+    end
+end
+
+writeEachRun = 0;
+
 options.generation=0;
 options.lastMove(:) = ones(options.populationsize,1) ;
 
-if options.plot == 1 ; fig=figure('Position',[0 0 1800 700]); end
+if options.plot == 1 ;
+    fig=figure('Position',[0 0 1800 700]); 
+    figAx = fig;
+end
 for i = 1 : length(criterias)
     Best.criteria{i} = 1;
 end
 
-options.weights = exp(options.weightrange *  [-options.populationsize/2:options.populationsize/2] ./options.populationsize);
-options.weights = 0.5*power([2/options.populationsize:2/options.populationsize:2],options.weightrange);
+
+%options.weights = exp(options.weightrange *  [-options.populationsize/2:options.populationsize/2] ./options.populationsize);
+%options.weights = 0.5*power([2/options.populationsize:2/options.populationsize:2],options.weightrange);
+options.weights = ([2/options.populationsize:2/options.populationsize:2]);
+options.weights(1:floor(length(options.weights)/2)) = options.weights(1:floor(length(options.weights)/2)).^(1/options.weightrange);
+options.weights(floor(length(options.weights)/2):length(options.weights)) = options.weights(floor(length(options.weights)/2):length(options.weights)).^(options.weightrange)
+
+options.weights = options.weights;
+%scatter([1:length(options.weights)],options.weights)
+
+
 % options.weights = 1+randn(options.populationsize,1);
 %options.weights = ones(options.populationsize,1)
 %weightList = 2*([1:options.maxIter]/options.maxIter).^0.5;
 weightList = ([1:options.maxIter]/options.maxIter);
-options.weightsmodifier = randn(options.populationsize,1);
+options.weightsmodifier = 2*(rand(options.populationsize,1)-0.5);
+
+%% Test if parallel computing toolbox is active
+if license('test','Distrib_Computing_Toolbox')
+    fprintf('\nParallel Computing Toolbox is installed\nMPI is turned off and parfor enabled\n')
+    options.mpi = 1;
+end
+
 
 %% Compile instrument
     fprintf('compiling...')
@@ -23,9 +62,21 @@ options.weightsmodifier = randn(options.populationsize,1);
     McString = [McString ' ' filename];
     McString = [McString ' -n 1'];
     McString = [McString ' --dir ' options.dir];
-    McString = [McString ' --mpi ' num2str(options.mpi) ''];
+%     if options.mpi > 1
+        McString = [McString ' --mpi ' num2str(options.mpi) ''];
+%     end
     McString = [McString ' -c'];
-    McString = [McString ' waveMin=1.0 waveMax=4.0'];
+    %% Parameters
+    fnames=fieldnames(p);
+    for i=1:length(fnames)
+        val = eval(['p.' fnames{i}]);
+        if ischar(val)
+            insertval = val;
+        else
+            insertval = num2str(val(2));
+        end
+        McString = [McString ' ' fnames{i} '=' insertval];
+    end
     [supress,output] = unix(McString);
     %unix(McString)
     fprintf('   Done in %2.2f seconds\n',toc(compile))
@@ -51,11 +102,12 @@ fNames.variables=fieldnames(variables);
 
 %% Optimizer loop
 while options.generation < options.maxIter
+    generationTimer = tic;
     
     options.generation = options.generation +1;
     %options.weights = [0.25 + 1.5/options.populationsize:1.5/options.populationsize:1.75]  * weightList(options.generation);
-    options.weights = 1.5 - weightList(options.generation) * options.weightsmodifier;
-    options.weights(options.weights<0) = 0;
+    %options.weights = 1 + weightList(options.generation) * options.weightsmodifier;
+    %options.weights(options.weights<0) = 0;
     
     if options.generation == 1
         History(options.generation).probagated_forward = ones(options.populationsize,1);
@@ -86,9 +138,11 @@ while options.generation < options.maxIter
     options.fNames = fNames;
     if options.generation > 1  
         %[thisGeneration,options,History] = optim_Walker(thisGeneration,options,History,criterias);
-        [thisGeneration,options,History] = optim_Genetic_memory(thisGeneration,options,History,criterias);
+        %[thisGeneration,options,History] = optim_Genetic_memory(thisGeneration,options,History,criterias);
         %[thisGeneration,options,History] = optim_Genetic(thisGeneration,options,History,criterias);
         %[thisGeneration,options,History] = optim_random(thisGeneration,options,History,criterias);
+        %[thisGeneration,options,History] = optim_ParetoPSO(thisGeneration,options,History,criterias);
+        [thisGeneration,options,History] = optim_ParetoSearch(thisGeneration,options,History,criterias);
         
     end
     options.lastMove;
@@ -130,7 +184,8 @@ while options.generation < options.maxIter
     end
 %     out=struct(100);
     out={};
-    for population = 1 : options.populationsize  %% Parfor
+    
+    parfor population = 1 : options.populationsize  %% Parfor
             %% Set parameters
 
 
@@ -138,10 +193,13 @@ while options.generation < options.maxIter
             %% Run McStas
             run = tic;
             tmp = runMcStas(ParStrings{population},options,fNames,filename,population);
-            fprintf('generation %3i (pop #%3i)  | ',options.generation,population)
-            fprintf(' Done in %2.2f sec  |',toc(run))
-            fprintf(' price = %6.0f k€ , intensity = %2.5f  | ',tmp{2,2},tmp{1,2})
-            fprintf('\n')
+            if writeEachRun == 1
+                fprintf('------- generation %3i (pop #%3i)  | ',options.generation,population)
+                fprintf(' Done in %2.2f sec  |',toc(run))
+                fprintf(' price = %6.0f k€ , intensity = %2.5f  | ',tmp{2,2},tmp{1,2})
+                fprintf('\n')
+            else
+            end
             
             
     %         
@@ -149,7 +207,6 @@ while options.generation < options.maxIter
             out(:,:,population) = tmp;
 
     end
-    
     %% Collect all data from this gerneration
     % Save history
     for j = 1:length(out(1,1,:))
@@ -167,7 +224,10 @@ while options.generation < options.maxIter
         end
     end
     
-    % Calculate criteria   criterias
+    %% Print generation details
+
+    
+    %% Calculate criteria   criterias
     for i = 1:length(out(1,1,:))
         %criteria(i,options.generation) = eval(['History(options.generation).results(i).' criterias{1} ' / History(options.generation).results(i).' criterias{2} ';']);
         for j = 1 : length(criterias)
@@ -189,14 +249,17 @@ while options.generation < options.maxIter
         %criteria{i,options.generation} = criteria{i,options.generation} * critNorm(:);
         for j = 1 : length(criterias)
            criteria{i,options.generation}{j}  = criteria{i,options.generation}{j} * critNorm(j) + critAdd(j); 
+           
         end
+        
     end
     History(options.generation).criteria = criteria(:,end);
     plotGradual= 1;
     %% Plot status
     if options.plot == 1
         clist = jet(options.populationsize);
-           
+           %figure(fig)
+           subplot(1,2,2)
         if plotGradual== 1
             
             Cmap = jet(options.maxIter);
@@ -207,7 +270,7 @@ while options.generation < options.maxIter
                 end
                     %errorbar(c2,c1,eval(['History(options.generation).results(i).' criterias{1} '_error'])/2,'o','Color',clist(i,:),'MarkerSize',10,'Marker','.');
 			if (j<options.generation)
-                    		scatter(c2,c1,15,Cmap(options.generation,:),'filled')
+                scatter(c2,c1,15,Cmap(options.generation,:),'filled')
 			else
 				scatter(c2,c1,15,Cmap(options.generation,:),'filled','LineWidth',0.6)
             end
@@ -298,23 +361,40 @@ while options.generation < options.maxIter
         end
     end
     
-    %% Print end-of-generation
-    
-    fprintf('Moving to next generation -----------------------\n')
-    fprintf('GENERATION %i\n',options.generation)
-    fprintf('Best solution is gen %i (pop %1i)\n',Best.generation,Best.pop)
-    for i = 1 : length(criterias)
-        if (Best.criteria{i}-1) > 0
-            fprintf('Criteria (%s) change = +%2.2f %%\n',criterias{i},100*(Best.criteria{i}-1))
-        else
-            fprintf('Criteria (%s) change = %2.2f %%\n',criterias{i},100*(Best.criteria{i}-1))
-        end
-    end
-    fprintf('Price = %2.0f k€ , intensity = %2.4f',Best.results.price,Best.results.intensity)
-    fprintf('\n--------------------------------------------------\n')
-    %save('save_all.mat');
+
+    end    
+%% Print end-of-generation
+fprintf('Moving to next generation -----------------------\n')
+fprintf('GENERATION %i\n',options.generation)
+fprintf('Best solution is gen %i (pop %1i)\n',Best.generation,Best.pop)
+for i = 1 : length(criterias)
+    if (Best.criteria{i}-1) > 0
+        fprintf('Criteria (%s) change = +%2.2f %%\n',criterias{i},100*(Best.criteria{i}-1))
+    else
+        fprintf('Criteria (%s) change = %2.2f %%\n',criterias{i},100*(Best.criteria{i}-1))
     end
 end
+fprintf('Price = %2.0f k€ , intensity = %2.4f\n',Best.results.price,Best.results.intensity)
+%
+c=0;
+for i= 1:numel(History)
+    for j = 1:length(History(1).results)
+        c=c+1;
+        PriceList(c) = History(i).results(j).price;
+        IList(c) = History(i).results(j).intensity;
+    end
+end
+fprintf('Best intensities under price:\n')
+fprintf('\tmax price: 1000 k€ , I = %2.4f\n',max(IList(PriceList<1000)))
+fprintf('\tmax price: 2000 k€ , I = %2.4f\n',max(IList(PriceList<2000)))
+fprintf('\tmax price: 3000 k€ , I = %2.4f\n',max(IList(PriceList<3000)))
+fprintf('\tmax price: 4000 k€ , I = %2.4f\n',max(IList(PriceList<4000)))
+%
+fprintf('Generation took %2.0f seconds, avg %2.2f sec pr simulation',toc(generationTimer),toc(generationTimer)/options.populationsize)
+fprintf('\n--------------------------------------------------\n')
+%save('save_all.mat');
+end
+
 
 %fprintf('BEST: Intensity: %2.3f , Price: %2.0f k€ , sig2noise: %2.1f %% \n',BestOut.intensity,BestOut.price,100*BestOut.intensity/(BestOut.lambda_background_intensity))
 
