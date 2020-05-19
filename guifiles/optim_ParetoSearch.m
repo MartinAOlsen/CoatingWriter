@@ -189,8 +189,8 @@ end
 
 %% Plots
 if plotGerneration == 1
-
-subplot(1,2,1)
+options.numPlots = 3;
+subplot(1,3,1)
 colorList = jet(length(SwarmTargets));
 
 hold off
@@ -205,7 +205,21 @@ xlabel('Par 1')
 ylabel('Par 2')
 axis([0,1,0,1])
 pause(0.05)
+subplot(1,3,2)
+% for i = 1:length(posOut(:,1))
+    for j = 1:length(posOut(1,:))
+        scatter(ones(length(posOut(:,j)),1)*j,posOut(:,j),20,colorList(options.particleHomeSwarm(:),:),'filled')
+        hold on
+    end
+% end
 
+ylabel('val')
+xlabel('Par')
+xticks([1:length(options.fNames.variables)])
+xticklabels(options.fNames.variables)
+xtickangle(45)
+
+pause(0.05)
     
 end
 end

@@ -8,11 +8,11 @@ C2 = 0.2; % Random Factor
 maxSpeed = 0.2 ;
 minSpeed = 0.05;
 ChanceOfFlip = 0.02;
-minDistBetweenSwarms = 0.05;
+minDistBetweenSwarms = 0.075;
+minDistBetweenSims = 0.01;
 
 %% Create extra swarms without initial spawns
-SwarmTargets(end+1) = 0;
-SwarmTargets(end+1) = 10000;
+SwarmTargets(end) = 100;
 
 %% Initialize
 if options.generation == 2
@@ -29,9 +29,12 @@ end
 %% Best point for each swarm:
 for s = 1:length(SwarmTargets)
     allCrit=[];
+    c=0;
     for i = 1:length(History(options.generation-1).results)
         for j = 1:options.generation-1
             allCrit(j,i) = History(j).results(i).intensity^(SwarmTargets(s)) / History(j).results(i).price;
+            c=c+1;
+            allPars(c,:) = History(j).normPars{i};
         end
     end
     [m,I] = max(allCrit(:));
@@ -80,25 +83,53 @@ for i=1:options.populationsize
     
     options.Velocities(i,:) = (options.Velocities(i,:) + (speed * dir)*C1 ) / (C1+1);
     
+
+    
     
     History(options.generation-1).probagated_forward(i) = 1;
     speedlist(i) = sqrt(sum((C1 * speed * dir + randn(1,length(dir)) * C2).^2));
-    
     posOut(i,:) = pos;
     
 end
 
+
+
+
 %% Update pos
+% Make sure points has a certain distance from previous points
+C = 0;
 for i=1:options.populationsize
-    thisGeneration.pars(:,i) = History(end-1).normPars{i} + options.Velocities(i,:)';
-   for j = 1:length(thisGeneration.pars(:,i))
-       if thisGeneration.pars(j,i) > 1
-           thisGeneration.pars(j,i) = 1;
-       elseif thisGeneration.pars(j,i)  < 0
-           thisGeneration.pars(j,i)  = 0;
-       end
-   end
+    c=0;
+ while true
+    for j = 1:length(thisGeneration.pars(:,i))
+        thisGeneration.pars(j,i) = History(end-1).normPars{i}(j) + options.Velocities(i,j)' + 0.001*c*rand(); 
+    end
+    for k = 1:length(allPars(:,1))
+        tmp = allPars(k,:);
+        closestElementList(k) = sum(abs(tmp(:)-thisGeneration.pars(:,i)))/length(allPars(1,:));
+    end
+    closestElement = min(closestElementList);
+    if sum(thisGeneration.pars(:,i) > 0) > 0 && sum(thisGeneration.pars(:,i) < 1) > 0 && closestElement > minDistBetweenSims
+       break; 
+    else
+        c =c +1;
+    end
+    if closestElement < minDistBetweenSims
+        C = C + 1;
+    end
+ end
 end
+fprintf('Moved %i points that were too close\n',C)
+% for i=1:options.populationsize
+%     thisGeneration.pars(:,i) = History(end-1).normPars{i} + options.Velocities(i,:)';
+%    for j = 1:length(thisGeneration.pars(:,i))
+%        if thisGeneration.pars(j,i) > 1
+%            thisGeneration.pars(j,i) = 1;
+%        elseif thisGeneration.pars(j,i)  < 0
+%            thisGeneration.pars(j,i)  = 0;
+%        end
+%    end
+% end
 
 %% migrate particles
 for i=1:options.populationsize
@@ -113,9 +144,10 @@ for i=1:options.populationsize
 end
 
 %% Plots
-if plotGerneration == 1
-
-subplot(1,2,1)
+if plotGerneration == 1 && options.plot == 1
+    options.numPlots = 3;
+% 
+subplot(1,3,1)
 colorList = jet(length(SwarmTargets));
 
 hold off
@@ -130,7 +162,23 @@ xlabel('Par 1')
 ylabel('Par 2')
 axis([0,1,0,1])
 pause(0.05)
+subplot(1,3,2)
+hold off
+% for i = 1:length(posOut(:,1))
+    for j = 1:length(posOut(1,:))
+        scatter(ones(length(posOut(:,j)),1)*j,posOut(:,j),20,colorList(options.particleHomeSwarm(:),:),'filled')
+        hold on
+    end
+% end
 
-    
+ylabel('val')
+xlabel('Par')
+xticks([1:length(options.fNames.variables)])
+xticklabels(options.fNames.variables)
+xtickangle(45)
+
+pause(0.05)
+else
+    options.numPlots = 1;
 end
 end

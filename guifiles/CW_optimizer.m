@@ -1,5 +1,6 @@
 function Best = CW_optimizer(p,options,criterias,filename);
 clc; close all; fprintf('\nSTARTING CW OPTIMIZER\n')
+options.numPlots = 1;
 
 if isfield(options,'RamDisk')
     if options.RamDisk ==1
@@ -141,8 +142,8 @@ while options.generation < options.maxIter
         %[thisGeneration,options,History] = optim_Genetic_memory(thisGeneration,options,History,criterias);
         %[thisGeneration,options,History] = optim_Genetic(thisGeneration,options,History,criterias);
         %[thisGeneration,options,History] = optim_random(thisGeneration,options,History,criterias);
-        %[thisGeneration,options,History] = optim_ParetoPSO(thisGeneration,options,History,criterias);
-        [thisGeneration,options,History] = optim_ParetoSearch(thisGeneration,options,History,criterias);
+        [thisGeneration,options,History] = optim_ParetoPSO(thisGeneration,options,History,criterias);
+        %[thisGeneration,options,History] = optim_ParetoSearch(thisGeneration,options,History,criterias);
         
     end
     options.lastMove;
@@ -259,7 +260,7 @@ while options.generation < options.maxIter
     if options.plot == 1
         clist = jet(options.populationsize);
            %figure(fig)
-           subplot(1,2,2)
+           subplot(1,options.numPlots,options.numPlots)
         if plotGradual== 1
             
             Cmap = jet(options.maxIter);

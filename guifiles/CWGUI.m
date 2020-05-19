@@ -28,6 +28,8 @@ classdef CWGUI < matlab.apps.AppBase
         Slider_4                 matlab.ui.control.Slider
         Parameter4DropDownLabel  matlab.ui.control.Label
         Parameter4DropDown       matlab.ui.control.DropDown
+        EnvelopePlotButton matlab.ui.control.Button
+        RefineList  matlab.ui.control.DropDown
     end
 
 
@@ -132,10 +134,24 @@ classdef CWGUI < matlab.apps.AppBase
             app.QuickAnalyzeButton.Position = [401 19 105 22];
             app.QuickAnalyzeButton.Text = 'Quick Analyze';
             app.QuickAnalyzeButton.ButtonPushedFcn = createCallbackFcn(app,@RunQuickAnalyze);
+            
+            
+            % Create EnvelopePlotButton
+            app.EnvelopePlotButton = uibutton(app.UIFigure, 'push');
+            app.EnvelopePlotButton.Position = [681 38 105 22];
+            app.EnvelopePlotButton.Text = 'Plot Pareto Front';
+            app.EnvelopePlotButton.ButtonPushedFcn = createCallbackFcn(app,@EnvelopeButton);
+            
+            % Create RefineList
+            app.RefineList = uidropdown(app.UIFigure);
+            app.RefineList.Position = [681 19 105 22];
+            app.RefineList.Items = {'0','1e6','1e7','1e8','1e9'};
+            app.RefineList.Value = '0';
+            
 
             % Create ChoosethisButton
             app.ChoosethisButton = uibutton(app.UIFigure, 'push');
-            app.ChoosethisButton.Position = [530 19 100 22];
+            app.ChoosethisButton.Position = [961 19 100 22];
             app.ChoosethisButton.Text = 'Choose this';
 
             % Create PlotaxisLabel
@@ -354,6 +370,11 @@ classdef CWGUI < matlab.apps.AppBase
             save('CW_GUI_DATA.mat','History','CriteriaList','ParameterList','Analysis');
    
         end
+        
+        function app = EnvelopeButton(app)
+            PlotEnvelope(str2num(app.RefineList.Value));
+        end
+        
         
         function app = RunQuickAnalyze(app)
             load('CW_GUI_DATA.mat');
